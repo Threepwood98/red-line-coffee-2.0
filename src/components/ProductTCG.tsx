@@ -123,7 +123,7 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
     <div
       ref={cardRef}
       className={cn(
-        "p-0 gap-0 relative cursor-pointer transition-all duration-300 ease-out",
+        "border-2 rounded-xl relative cursor-pointer transition-all duration-300 ease-out",
         isHovered && !isNR
           ? "shadow-2xl " + rarityStyles[rarity].glow
           : "shadow-xl",
@@ -136,26 +136,24 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
     >
       <div
         className={cn(
-          "flex justify-between items-center rounded-t-xl px-3 sm:px-6 py-1 sm:py-2 transition-all duration-300",
+          "border-b-2 flex justify-between items-center rounded-t-xl px-3 sm:px-6 py-1 sm:py-2 transition-all duration-300",
           !isNR ? rarityStyles[rarity].gradient : "py-1.5 sm:py-2.5",
         )}
       >
         <CategoryIcon category={product.category} />
-        <div className="flex gap-0.5">
+        <div className="flex gap-0.5 items-center">
           <StarIcon className={cn(!isNR && rarityStyles[rarity].star)} />
           {!isNR && (
-            <span className="font-display text-xl sm:text-xl">
+            <span className="text-xl sm:text-xl">
               {product.rating.toFixed(1)}
             </span>
           )}
         </div>
       </div>
-      {/* <Separator /> */}
       <div className="px-3 sm:px-6 py-3 sm:py-6 transition-all duration-300">
         <div className="dark:hidden">{holoOverlay}</div>
         <div className="hidden dark:block">{darkHoloOverlay}</div>
         <div className="flex flex-col items-center gap-2 sm:gap-3">
-          {/* ← único cambio: <img> en lugar de <Image fill> */}
           <div className="relative aspect-square rounded-xl w-full overflow-hidden">
             <img
               src={product.image}
@@ -163,7 +161,6 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
               className="object-cover w-full h-full"
             />
           </div>
-
           <div className="text-center uppercase">
             <span className="block font-display text-lg sm:text-xl text-accent-foreground">
               {product.name}
@@ -174,12 +171,9 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
           </div>
         </div>
       </div>
-      {/* <Separator /> */}
-      <div className="flex justify-between rounded-b-xl px-3 sm:px-6 py-1 sm:py-2">
-        <span className="font-display text-xl sm:text-xl">
-          $ {product.price}
-        </span>
-        <span className="font-display text-xl sm:text-xl">
+      <div className="border-t-2 flex justify-between rounded-b-xl px-3 sm:px-6 py-1 sm:py-2">
+        <span className="text-xl sm:text-xl">$ {product.price}</span>
+        <span className="text-xl sm:text-xl">
           + {(product.price * 0.1).toFixed(2)}
         </span>
       </div>

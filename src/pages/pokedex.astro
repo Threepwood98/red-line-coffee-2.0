@@ -1,0 +1,52 @@
+---
+import "../styles/global.css";
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout>
+  <div>
+    <video id="video" autoplay playsinline></video>
+    <button id="capturar">📸 Identificar</button>
+    <canvas id="canvas" style="display:none"></canvas>
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    const API_URL = "https://pokemon-api-production-be3a.up.railway.app/identificar";
+
+    const video = document.getElementById("video") as HTMLVideoElement | null;
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement | null;
+    const resultado = document.getElementById("resultado") as HTMLElement | null;
+
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: "environment" } })
+      .then((stream) => {
+        if (video) video.srcObject = stream;
+      });
+
+    document.getElementById("capturar")?.addEventListener("click", async () => {
+      if (!video || !canvas || !resultado) return;
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext("2d")?.drawImage(video, 0, 0);
+
+      resultado.textContent = "Analizando...";
+
+      canvas.toBlob(async (blob: Blob | null) => {
+        if (!blob) return;
+        const formData = new FormData();
+        formData.append("file", blob, "foto.jpg");
+
+        const res = await fetch(API_URL, { method: "POST", body: formData });
+        const data = await res.json();
+
+        const top = data.predicciones[0];
+        const nombre = top.label.charAt(0).toUpperCase() + top.label.slice(1);
+        const confianza = (top.score * 100).toFixed(1);
+
+        resultado.textContent = `¡Es ${nombre}! (${confianza}% seguro)`;
+      }, "image/jpeg");
+    });
+  </script>
+</Layout>

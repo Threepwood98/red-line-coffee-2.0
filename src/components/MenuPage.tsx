@@ -4,32 +4,42 @@ import { ProductTCG } from "@/components/ProductTCG";
 import { categories, products, type Category } from "@/lib/data/products";
 import { cn } from "@/lib/utils";
 
-export function MenuPage() {
-  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+type ActiveCategory = Category | "all";
 
-  const filtered = activeCategory
-    ? products.filter((p) => p.category === activeCategory)
-    : products;
+const allCategories = [
+  { id: "0", name: "Todo", value: "all" as ActiveCategory },
+  ...categories,
+];
+
+export function MenuPage() {
+  const [activeCategory, setActiveCategory] = useState<ActiveCategory | null>(
+    "all",
+  );
+
+  const filtered =
+    activeCategory === "all" || activeCategory === null
+      ? products
+      : products.filter((p) => p.category === activeCategory);
 
   return (
-    <div className="flex flex-col h-dvh min-h-screen gap-4 sm:gap-8">
-      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-xs border-b">
-        <div className="flex flex-col gap-2 sm:gap-4 py-4 sm:py-8">
-          <h1 className="font-display text-3xl">Menú</h1>
-          <div className="flex justify-between">
-            {categories.map((ctg) => (
+    <div className="flex flex-col gap-4 sm:gap-8">
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-xs">
+        <div className="felx flex-col gap-4 sm:gap-8">
+          <h1 className="text-3xl">Menú</h1>
+          <div className="flex">
+            {allCategories.map((ctg) => (
               <button
                 key={ctg.id}
                 onClick={() =>
                   setActiveCategory(
-                    activeCategory === ctg.value ? null : ctg.value,
+                    activeCategory === ctg.value ? "all" : ctg.value,
                   )
                 }
                 className={cn(
-                  "flex gap-0.5 border-2 rounded-xl px-2 py-1 text-sm font-medium items-center transition-colors",
+                  "flex flex-col w-full items-center justify-center text-sm font-medium py-2 sm:py-2 border-b-2 border-transparent cursor-pointer transition-colors",
                   activeCategory === ctg.value
-                    ? "border-primary text-primary"
-                    : "border-neutral-600 hover:border-primary dark:border-neutral-400 dark:hover:border-primary text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-primary",
+                    ? "text-primary border-b-2 border-primary"
+                    : "hover:border-primary dark:hover:border-primary text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-primary",
                 )}
               >
                 <CategoryIcon category={ctg.value} /> {ctg.name}
@@ -37,7 +47,7 @@ export function MenuPage() {
             ))}
           </div>
         </div>
-      </header>
+      </div>
 
       <main className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

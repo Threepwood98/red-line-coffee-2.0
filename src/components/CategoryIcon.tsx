@@ -4,16 +4,18 @@ import {
   CakeSliceIcon,
   CoffeeIcon,
   CupSodaIcon,
+  LayoutGridIcon,
   SoupIcon,
   type LucideIcon,
 } from "lucide-react";
 
 interface CategoryIconProps {
-  category: Category;
+  category: Category | "all";
   className?: string;
 }
 
-const categoryIcons: Record<Category, LucideIcon> = {
+const categoryIcons: Record<Category | "all", LucideIcon> = {
+  all: LayoutGridIcon,
   coffees: CoffeeIcon,
   drinks: CupSodaIcon,
   foods: SoupIcon,
