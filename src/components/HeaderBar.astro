@@ -1,0 +1,22 @@
+---
+import { Image } from "astro:assets";
+import ThemeSwitch from "./ThemeSwitch";
+---
+
+<div
+  class="flex w-full h-16 px-4 sm:px-8 rounded-b-2xl items-center justify-between bg-primary-foreground"
+>
+  <!-- Avatar estático: sin JS necesario -->
+  <div class="border-2 border-primary size-12 rounded-full overflow-hidden">
+    <Image
+      src="/favicon.ico"
+      alt="logo"
+      width={48}
+      height={48}
+      class="w-full h-full object-cover"
+    />
+  </div>
+
+  <!-- Solo ThemeSwitch necesita hidratación -->
+  <ThemeSwitch client:load />
+</div>

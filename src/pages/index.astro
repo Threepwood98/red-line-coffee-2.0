@@ -1,11 +1,76 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import "../styles/global.css";
+import Layout from "@/layouts/Layout.astro";
+import HeroCarousel from "../components/HeroCarousel";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const topFive = [
+  {
+    id: 1,
+    name: "SakuraKnight",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=SakuraKnight",
+    points: 12500,
+    rank: 1,
+  },
+  {
+    id: 2,
+    name: "CoffeMage",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=CoffeMage",
+    points: 10200,
+    rank: 2,
+  },
+  {
+    id: 3,
+    name: "ByteWizard",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ByteWizard",
+    points: 9800,
+    rank: 3,
+  },
+  {
+    id: 4,
+    name: "LatteRogue",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=LatteRogue",
+    points: 8400,
+    rank: 4,
+  },
+  {
+    id: 5,
+    name: "EspressoHunter",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=EspressoHunter",
+    points: 7200,
+    rank: 5,
+  },
+];
 ---
 
 <Layout>
-	<Welcome />
+  <div class="flex flex-col h-dvh min-h-screen gap-4 sm:gap-8 mt-4 sm:mt-8">
+    <!-- Isla de React solo si HeroCarousel necesita JS -->
+    <HeroCarousel client:load />
+
+    <div class="flex flex-col w-full text-center">
+      <h2 class="font-display text-4xl md:text-5xl text-foreground">
+        RED LINE TOP 5
+      </h2>
+      <div class="flex justify-evenly">
+        {
+          topFive.map((user) => (
+            <div class="relative">
+              <div class="border-2 size-18 bg-primary-foreground rounded-full overflow-hidden">
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  width={72}
+                  height={72}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <span class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 font-display text-3xl text-yellow-600">
+                {user.points}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
 </Layout>
