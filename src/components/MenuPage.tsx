@@ -24,7 +24,7 @@ export function MenuPage() {
   return (
     <div className="flex flex-col gap-4 sm:gap-8">
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-xs">
-        <div className="felx flex-col gap-4 sm:gap-8">
+        <div className="flex flex-col gap-4 sm:gap-8">
           <h1 className="text-3xl">Menú</h1>
           <div className="flex">
             {allCategories.map((ctg) => (
