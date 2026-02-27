@@ -1,3 +1,9 @@
+// WARNING
+// Cada vez que se modifiques el SW o se quiera invalidar el cache, cambia el número de versión:
+// Ejemplo:
+// de esto: const CACHE_NAME = "example-v1";
+// a esto: const CACHE_NAME = "example-v2"; ← activate event borra el v1 automáticamente
+
 const CACHE_NAME = "redline-v1"; // cambiá por el nombre de tu app
 const SHELL_URLS = ["/", "/menu", "/store", "/ps4", "/pokedex"];
 
