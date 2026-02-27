@@ -49,7 +49,6 @@ export async function fetchPokemonList(
   const pokemonList = result.data.pokemon_v2_pokemon;
 
   return pokemonList.map((pokemon: any) => {
-    console.log("🚀 ~ fetchPokemonList ~ pokemon:", pokemon);
     return {
       id: pokemon.id,
       name: pokemon.name,
