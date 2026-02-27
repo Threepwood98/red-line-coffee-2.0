@@ -1,9 +1,9 @@
 ---
 import "../styles/global.css";
-import MenuPage from "@/components/MenuPage";
 import Layout from "@/layouts/Layout.astro";
+import App from "@/App";
 ---
 
 <Layout>
-  <MenuPage client:load />
+  <App client:only="react" />
 </Layout>

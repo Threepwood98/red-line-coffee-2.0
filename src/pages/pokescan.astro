@@ -1,5 +1,4 @@
 ---
-import { CameraIcon } from "lucide-react";
 import "../styles/global.css";
 import Layout from "@/layouts/Layout.astro";
 const API_URL =
@@ -8,20 +7,10 @@ const API_URL =
 
 <Layout>
   <div class="flex flex-col h-dvh min-h-screen gap-4 sm:gap-8 mt-4 sm:mt-8">
-    <div class="sticky top-0 z-10 bg-background/95 backdrop-blur-xs">
-      <div class="felx flex-col gap-4 sm:gap-8">
-        <h1 class="text-3xl">Pokédex</h1>
-        <div class="flex">
-          <a href="#">
-            <CameraIcon />
-          </a>
-        </div>
-      </div>
-    </div>
     <!-- Pokédex frame -->
     <div class="pokedex">
-      <!-- Pantalla principal -->
-      <div class="screen-area">
+      <!-- Pantalla SUPERIOR - Cámara -->
+      <div class="screen-area top-screen">
         <div class="screen-border">
           <div class="screen" id="screen">
             <video id="video" autoplay playsinline muted></video>
@@ -60,20 +49,7 @@ const API_URL =
         </div>
       </div>
 
-      <!-- Resultado -->
-      <div class="result-area" id="result-area" style="display:none">
-        <div class="result-screen">
-          <p class="result-label">POKÉMON DETECTADO</p>
-          <p class="result-name" id="result-name">—</p>
-          <div class="result-bar">
-            <div class="result-fill" id="result-fill"></div>
-          </div>
-          <p class="result-score" id="result-score">0%</p>
-          <div class="result-top3" id="result-top3"></div>
-        </div>
-      </div>
-
-      <!-- Botón -->
+      <!-- Botón capturar (entre pantallas) -->
       <div class="controls">
         <button class="btn-capture" id="btn-capture" disabled>
           <span class="btn-inner">
@@ -89,15 +65,30 @@ const API_URL =
             IDENTIFICAR
           </span>
         </button>
-        <button class="btn-retry" id="btn-retry" style="display:none">
-          ↩ VOLVER A ESCANEAR
-        </button>
+      </div>
+
+      <!-- Pantalla INFERIOR - Resultado -->
+      <div class="screen-area bottom-screen">
+        <div class="result-area" id="result-area">
+          <div class="result-screen">
+            <p class="result-label">POKÉMON DETECTADO</p>
+            <p class="result-name" id="result-name">—</p>
+            <div class="result-bar">
+              <div class="result-fill" id="result-fill"></div>
+            </div>
+            <p class="result-score" id="result-score">0%</p>
+            <div class="result-top3" id="result-top3"></div>
+          </div>
+          <button class="btn-retry" id="btn-retry" style="display:none">
+            ↩ VOLVER A ESCANEAR
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Press+Start 2P&family=VT323:wght@400&display=swap");
 
     * {
       box-sizing: border-box;
@@ -143,10 +134,18 @@ const API_URL =
       pointer-events: none;
     }
 
-    /* Pantalla */
+    /* Pantallas */
     .screen-area {
       position: relative;
       z-index: 1;
+    }
+
+    .top-screen {
+      margin-bottom: 12px;
+    }
+
+    .bottom-screen {
+      margin-top: 12px;
     }
 
     .lights {
@@ -333,7 +332,9 @@ const API_URL =
 
     /* Resultado */
     .result-area {
-      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .result-screen {
@@ -413,7 +414,6 @@ const API_URL =
 
     /* Controles */
     .controls {
-      margin-top: 16px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -509,7 +509,6 @@ const API_URL =
     const btnRetry = document.getElementById("btn-retry");
     const lightRed = document.getElementById("light-red");
 
-    // Iniciar cámara
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "environment" } })
       .then((stream) => {
@@ -517,7 +516,6 @@ const API_URL =
         btnCapture.disabled = false;
       })
       .catch(() => {
-        // Fallback a cámara frontal
         navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
           video.srcObject = stream;
           btnCapture.disabled = false;
@@ -525,11 +523,9 @@ const API_URL =
       });
 
     btnCapture.addEventListener("click", async () => {
-      // 1. Flash
       flash.classList.add("go");
       setTimeout(() => flash.classList.remove("go"), 400);
 
-      // 2. Congelar imagen
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext("2d").drawImage(video, 0, 0);
@@ -538,13 +534,11 @@ const API_URL =
       frozenImg.style.display = "block";
       video.style.display = "none";
 
-      // 3. Mostrar análisis
       reticle.style.display = "none";
       analyzing.style.display = "flex";
       lightRed.classList.add("blink");
-      btnCapture.style.display = "none";
+      btnCapture.disabled = true;
 
-      // 4. Llamar a la API
       try {
         canvas.toBlob(
           async (blob) => {
@@ -557,11 +551,11 @@ const API_URL =
             });
             const data = await res.json();
 
-            // 5. Mostrar resultado
             analyzing.style.display = "none";
             lightRed.classList.remove("blink");
-            resultArea.style.display = "block";
+            resultArea.style.display = "flex";
             btnRetry.style.display = "block";
+            btnCapture.disabled = false;
 
             const top = data.predicciones[0];
             const nombre =
@@ -575,7 +569,6 @@ const API_URL =
               resultFill.style.width = `${pct}%`;
             }, 100);
 
-            // Top 3
             resultTop3.innerHTML = data.predicciones
               .slice(1, 3)
               .map((p) => {
@@ -593,20 +586,19 @@ const API_URL =
       } catch (err) {
         analyzing.style.display = "none";
         lightRed.classList.remove("blink");
-        resultArea.style.display = "block";
+        resultArea.style.display = "flex";
         resultName.innerHTML = `<span class="error-msg">ERROR DE CONEXIÓN</span>`;
         btnRetry.style.display = "block";
+        btnCapture.disabled = false;
       }
     });
 
-    // Volver a escanear
     btnRetry.addEventListener("click", () => {
       frozenImg.style.display = "none";
       video.style.display = "block";
       reticle.style.display = "block";
       analyzing.style.display = "none";
       resultArea.style.display = "none";
-      btnCapture.style.display = "block";
       btnRetry.style.display = "none";
       resultFill.style.width = "0%";
       resultTop3.innerHTML = "";

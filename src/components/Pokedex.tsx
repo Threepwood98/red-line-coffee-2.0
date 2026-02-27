@@ -34,7 +34,7 @@ const POKEMON_TYPES = [
   "fairy",
 ];
 
-interface PokeListProps {
+interface PokedexProps {
   pokemonList: FullPokemon[];
 }
 
@@ -59,7 +59,7 @@ const typeColors: Record<string, string> = {
   fairy: "bg-pink-300",
 };
 
-export default function PokeList({ pokemonList }: PokeListProps) {
+export default function Pokedex({ pokemonList }: PokedexProps) {
   const [searchName, setSearchName] = useState("");
   const [selectedGeneration, setSelectedGeneration] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
@@ -166,10 +166,7 @@ export default function PokeList({ pokemonList }: PokeListProps) {
       </div>
       <a
         className="flex fixed bottom-20 right-4 sm:right-8 aspect-square rounded-xl size-14 bg-primary shadow-lg items-center justify-center"
-        onClick={() => {
-          // TODO: Agregar navegación aquí
-          console.log("Botón flotante cliqueado");
-        }}
+        href="/pokescan"
       >
         <ScanLineIcon className="size-8 text-accent" />
       </a>

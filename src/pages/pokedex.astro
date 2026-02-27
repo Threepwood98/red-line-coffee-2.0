@@ -1,12 +1,9 @@
 ---
 import "../styles/global.css";
 import Layout from "@/layouts/Layout.astro";
-import PokeList from "@/components/PokeList";
-import { fetchPokemonList } from "@/lib/pokeapi";
-
-const pokemonList = await fetchPokemonList(151);
+import App from "@/App";
 ---
 
 <Layout>
-  <PokeList pokemonList={pokemonList} client:load />
+  <App client:only="react" />
 </Layout>
