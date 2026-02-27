@@ -58,10 +58,10 @@ export default function App() {
             <Route path="/pokedex">
               {() => <Pokedex pokemonList={pokemonList} />}
             </Route>
-            <Route>
-              {() => <PlaceholderPage title="404 - No encontrado" />}
-            </Route>
             {/* <Route>
+              {() => <PlaceholderPage title="404 - No encontrado" />}
+            </Route> */}
+            <Route>
               {() => {
                 // En el cliente, redirigimos silenciosamente
                 if (typeof window !== "undefined") {
@@ -69,7 +69,7 @@ export default function App() {
                 }
                 return <HomePage />;
               }}
-            </Route> */}
+            </Route>
           </Switch>
         </Suspense>
       </main>
