@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { IconBolt } from "@tabler/icons-react";
-import { RefreshCwIcon, ScanLineIcon } from "lucide-react";
+import {
+  FlashlightIcon,
+  FlashlightOffIcon,
+  RefreshCwIcon,
+  ScanLineIcon,
+} from "lucide-react";
 
 const API_URL =
   "https://pokemon-api-production-be3a.up.railway.app/identificar";
@@ -217,9 +222,18 @@ export default function PokeScan() {
       {/* ── Top bar ─────────────────────────────────────────────── */}
       <div className="flex gap-4 h-20 border-b-8 border-r-8 border-red-950 rounded-br-full -mx-1 -mt-1 px-4 py-2 bg-red-700/85 shadow-lg">
         <span className="relative flex aspect-square h-full">
-          <span className="relative aspect-square h-full rounded-full border-6 border-neutral-300 bg-cyan-500" />
-          {isScanning && (
-            <span className="absolute aspect-square h-full rounded-full border-6 border-neutral-300 bg-cyan-300 shadow-[0_0_32px_12px_rgba(0,255,255,0.7)] animate-pulse" />
+          <span className="relative aspect-square h-full rounded-full border-4 border-neutral-400 bg-cyan-900 shadow-[inset_0_3px_6px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.05)]">
+            <span className="absolute top-[18%] left-[18%] w-[28%] h-[22%] rounded-full bg-white/15 blur-[1px]" />
+          </span>
+          {(isScanning || showResult) && (
+            <span
+              className={`absolute aspect-square h-full rounded-full border-4 border-neutral-400 bg-cyan-300
+        shadow-[0_0_12px_4px_rgba(0,255,255,0.5),inset_0_2px_3px_rgba(255,255,255,0.7),inset_0_-3px_6px_rgba(0,150,150,0.5)]
+        ${isScanning && !showResult ? "animate-pulse shadow-[0_0_28px_10px_rgba(0,255,255,0.8),inset_0_2px_3px_rgba(255,255,255,0.7),inset_0_-3px_6px_rgba(0,150,150,0.5)]" : ""}
+      `}
+            >
+              <span className="absolute top-[18%] left-[18%] w-[28%] h-[22%] rounded-full bg-white/40 blur-[1px]" />
+            </span>
           )}
         </span>
         <span className="flex flex-1 items-center justify-center text-xl font-bold text-red-950">
@@ -227,14 +241,32 @@ export default function PokeScan() {
         </span>
         <div className="flex justify-end gap-2">
           <span
-            className={`h-1/3 aspect-square rounded-full transition-colors ${isReady && !camError ? "bg-red-400 shadow-[0_0_6px_2px_rgba(255,0,0,0.4)]" : "bg-red-800"}`}
-          />
+            className={`h-1/3 aspect-square rounded-full transition-all duration-300 relative ${
+              !isReady && camError
+                ? "bg-red-400 shadow-[0_0_8px_2px_rgba(255,0,0,1),inset_0_1px_2px_rgba(255,255,255,0.6),inset_0_-2px_4px_rgba(180,0,0,0.4)]"
+                : "bg-red-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.05)]"
+            }`}
+          >
+            <span className="absolute top-[20%] left-[20%] w-[30%] h-[25%] rounded-full bg-white/40 blur-[1px]" />
+          </span>
           <span
-            className={`h-1/3 aspect-square rounded-full transition-colors ${isScanning ? "bg-yellow-300 shadow-[0_0_16px_6px_rgba(250,204,21,0.7)]" : "bg-amber-600"}`}
-          />
+            className={`h-1/3 aspect-square rounded-full transition-all duration-300 relative ${
+              isScanning
+                ? "bg-yellow-300 shadow-[0_0_10px_4px_rgba(250,204,21,0.6),inset_0_1px_2px_rgba(255,255,255,0.7),inset_0_-2px_4px_rgba(180,130,0,0.4)]"
+                : "bg-amber-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.05)]"
+            }`}
+          >
+            <span className="absolute top-[20%] left-[20%] w-[30%] h-[25%] rounded-full bg-white/40 blur-[1px]" />
+          </span>
           <span
-            className={`h-1/3 aspect-square rounded-full transition-colors ${showResult ? "bg-green-300 shadow-[0_0_16px_6px_rgba(0,255,0,0.7)]" : "bg-green-800"}`}
-          />
+            className={`h-1/3 aspect-square rounded-full transition-all duration-300 relative ${
+              isReady && !camError
+                ? "bg-green-400 shadow-[0_0_8px_2px_rgba(0,255,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6),inset_0_-2px_4px_rgba(0,100,0,0.4)]"
+                : "bg-green-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.05)]"
+            }`}
+          >
+            <span className="absolute top-[20%] left-[20%] w-[30%] h-[25%] rounded-full bg-white/40 blur-[1px]" />
+          </span>
         </div>
       </div>
 
@@ -350,7 +382,11 @@ export default function PokeScan() {
               : "border-amber-500 bg-amber-300 text-red-950"
           }`}
         >
-          <IconBolt className="stroke-3" />
+          {torchOn ? (
+            <FlashlightOffIcon className="stroke-3" />
+          ) : (
+            <FlashlightIcon className="stroke-3" />
+          )}
         </button>
 
         {/* Scan / Retry */}
