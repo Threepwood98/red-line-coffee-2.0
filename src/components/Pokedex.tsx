@@ -138,7 +138,7 @@ export default function Pokedex({ pokemonList }: PokedexProps) {
             <img
               src={pokemon.image}
               alt={pokemon.id.toString()}
-              className="aspect-square h-full border rounded-xl p-1 bg-neutral-600 dark:bg-neutral-400"
+              className="aspect-square h-full border rounded-xl bg-neutral-600 dark:bg-neutral-400"
             />
             <div className="flex flex-col flex-1 h-full justify-between font-medium">
               <span>{formatPokemonId(pokemon.id)}</span>

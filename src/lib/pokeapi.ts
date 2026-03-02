@@ -52,10 +52,11 @@ export async function fetchPokemonList(
     return {
       id: pokemon.id,
       name: pokemon.name,
-      image:
-        pokemon.pokemon_v2_pokemonsprites[0]?.sprites.other?.[
-          "official-artwork"
-        ]?.front_default || "",
+      // image:
+      //   pokemon.pokemon_v2_pokemonsprites[0]?.sprites.other?.[
+      //     "official-artwork"
+      //   ]?.front_default || "",
+      image: pokemon.pokemon_v2_pokemonsprites[0]?.sprites.front_default || "",
       types: pokemon.pokemon_v2_pokemontypes.map(
         (t: any) => t.pokemon_v2_type.name,
       ),
