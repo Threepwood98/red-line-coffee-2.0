@@ -376,7 +376,7 @@ export default function PokeScan() {
                 ? "Apagar flash"
                 : "Encender flash"
           }
-          className={`flex aspect-square rounded-full px-4 py-2 border-b-4 font-bold text-xl items-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2 ${
+          className={`flex aspect-square rounded-full items-center justify-center border-b-4 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2 ${
             torchOn
               ? "border-yellow-600 bg-yellow-300 text-yellow-800 shadow-[0_0_14px_4px_rgba(250,204,21,0.5)]"
               : "border-amber-500 bg-amber-300 text-red-950"
