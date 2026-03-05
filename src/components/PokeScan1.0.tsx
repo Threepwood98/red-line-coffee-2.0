@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { IconBolt } from "@tabler/icons-react";
 import {
   FlashlightIcon,
   FlashlightOffIcon,
@@ -6,39 +7,17 @@ import {
   ScanLineIcon,
 } from "lucide-react";
 
-// ── Actualiza esta URL con la de tu servicio en Railway ──────────────
 const API_URL =
-  "https://pokemon-identifier-production.up.railway.app/api/identify-pokemon";
+  "https://pokemon-api-production-be3a.up.railway.app/identificar";
 
-// ── Tipos ────────────────────────────────────────────────────────────
-
-interface PokemonType {
-  slot: number;
-  name: string;
-}
-
-interface PokemonDetails {
-  id: number;
-  name: string;
-  height: number;
-  weight: number;
-  types: PokemonType[];
-  stats: { hp: number; attack: number; defense: number; speed: number };
-  sprite_url: string | null;
-  pokeapi_url: string;
-}
-
-interface APIResponse {
-  success: boolean;
-  pokemon_name: string;
-  confidence: number; // 0–100
-  detection_method: string; // vit_direct | vit_confirmed | serpapi_fallback | serpapi_only
-  matched_keywords: string[];
-  details: PokemonDetails | null;
+interface Prediction {
+  label: string;
+  score: number;
 }
 
 type Phase = "idle" | "scanning" | "result" | "error";
 
+// `torch` no existe en los tipos estándar del navegador — se extienden
 interface ExtendedCapabilities extends MediaTrackCapabilities {
   torch?: boolean;
 }
@@ -46,41 +25,10 @@ interface ExtendedConstraints extends MediaTrackConstraintSet {
   torch?: boolean;
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────
-
 function formatLabel(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1).replace(/-/g, " ");
 }
 
-const METHOD_LABELS: Record<string, string> = {
-  vit_direct: "IA Directa",
-  vit_confirmed: "IA + Búsqueda",
-  serpapi_fallback: "Búsqueda Web",
-  serpapi_only: "Búsqueda Web",
-};
-
-const TYPE_COLORS: Record<string, string> = {
-  fire: "bg-orange-400 text-white",
-  water: "bg-blue-400 text-white",
-  grass: "bg-green-400 text-white",
-  electric: "bg-yellow-300 text-yellow-900",
-  psychic: "bg-pink-400 text-white",
-  ice: "bg-cyan-300 text-cyan-900",
-  dragon: "bg-indigo-600 text-white",
-  dark: "bg-gray-700 text-white",
-  fairy: "bg-pink-300 text-pink-900",
-  normal: "bg-gray-300 text-gray-700",
-  fighting: "bg-red-600 text-white",
-  flying: "bg-sky-300 text-sky-900",
-  poison: "bg-purple-400 text-white",
-  ground: "bg-yellow-600 text-white",
-  rock: "bg-stone-400 text-white",
-  bug: "bg-lime-400 text-lime-900",
-  ghost: "bg-violet-700 text-white",
-  steel: "bg-slate-400 text-white",
-};
-
-// ════════════════════════════════════════════════════════════════════
 export default function PokeScan() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -97,22 +45,21 @@ export default function PokeScan() {
   const [torchOn, setTorchOn] = useState<boolean>(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [frozenSrc, setFrozenSrc] = useState<string | null>(null);
-  const [result, setResult] = useState<APIResponse | null>(null);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [camError, setCamError] = useState<string | null>(null);
 
-  // ── Detectar cámaras ────────────────────────────────────────────────
+  // ── Detectar cuántas cámaras tiene el dispositivo ───────────────────────
   const detectCameras = useCallback(async () => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
-      setHasMultipleCameras(
-        devices.filter((d) => d.kind === "videoinput").length > 1,
-      );
+      const videoInputs = devices.filter((d) => d.kind === "videoinput");
+      setHasMultipleCameras(videoInputs.length > 1);
     } catch {
       setHasMultipleCameras(false);
     }
   }, []);
 
-  // ── Iniciar cámara ──────────────────────────────────────────────────
+  // ── Iniciar cámara ──────────────────────────────────────────────────────
   const startCamera = useCallback(
     async (facing: "environment" | "user") => {
       try {
@@ -121,10 +68,15 @@ export default function PokeScan() {
         setTorchOn(false);
 
         let stream: MediaStream;
+
+        // Estrategia en cascada para máxima compatibilidad:
+        // 1. Intenta con facingMode exacto
+        // 2. Si falla, intenta sin restricción de facingMode
+        // 3. Si falla, intenta con constraints mínimos (compatibilidad máxima)
         try {
           stream = await navigator.mediaDevices.getUserMedia({
             video: {
-              facingMode: { ideal: facing },
+              facingMode: { ideal: facing }, // `ideal` en lugar de exacto — no falla si no está disponible
               width: { ideal: 1280 },
               height: { ideal: 960 },
             },
@@ -142,6 +94,8 @@ export default function PokeScan() {
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          // `play()` puede fallar en Safari si no hay gesto del usuario
+          // — se intenta silenciosamente, el atributo autoPlay del elemento lo retoma
           await videoRef.current.play().catch(() => {});
         }
 
@@ -149,6 +103,9 @@ export default function PokeScan() {
         setTorchOk(!!caps.torch);
         setIsReady(true);
         setCamError(null);
+
+        // Redetectar cámaras después de obtener permisos
+        // (antes del permiso enumerateDevices no devuelve labels)
         await detectCameras();
       } catch {
         setCamError(
@@ -166,7 +123,7 @@ export default function PokeScan() {
     };
   }, []);
 
-  // ── Toggle torch ────────────────────────────────────────────────────
+  // ── Toggle torch ────────────────────────────────────────────────────────
   const toggleTorch = async () => {
     if (!torchOk || !trackRef.current) return;
     const next = !torchOn;
@@ -178,7 +135,7 @@ export default function PokeScan() {
     } catch {}
   };
 
-  // ── Cambiar cámara ──────────────────────────────────────────────────
+  // ── Cambiar cámara (solo si hay más de una) ─────────────────────────────
   const toggleFacing = () => {
     const next: "environment" | "user" =
       facingMode === "environment" ? "user" : "environment";
@@ -186,7 +143,7 @@ export default function PokeScan() {
     startCamera(next);
   };
 
-  // ── Capturar + enviar a la API ──────────────────────────────────────
+  // ── Capturar + enviar a la API ──────────────────────────────────────────
   const handleScan = async () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -200,7 +157,7 @@ export default function PokeScan() {
       }, 200);
     }
 
-    // Capturar frame
+    // Capturar frame (espejado si es cámara frontal)
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d")!;
@@ -212,7 +169,7 @@ export default function PokeScan() {
 
     setFrozenSrc(canvas.toDataURL("image/jpeg", 0.9));
     setPhase("scanning");
-    setResult(null);
+    setPredictions([]);
 
     canvas.toBlob(
       async (blob: Blob | null) => {
@@ -220,33 +177,24 @@ export default function PokeScan() {
           setPhase("error");
           return;
         }
-
         try {
           const form = new FormData();
-          form.append("file", blob, "foto.jpg"); // campo "file" que espera FastAPI
+          form.append("file", blob, "foto.jpg");
 
           const res = await fetch(API_URL, { method: "POST", body: form });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-          // La API devuelve errores con { success: false, error: "..." }
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            console.error("API error:", errData.error ?? `HTTP ${res.status}`);
-            setPhase("error");
-            return;
-          }
+          const data: { predicciones: Prediction[] } = await res.json();
 
-          const data: APIResponse = await res.json();
-
-          setResult(data);
+          setPredictions(data.predicciones);
           setPhase("result");
 
-          // Animar barra de confianza
           setTimeout(() => {
-            if (barRef.current)
-              barRef.current.style.width = `${Math.round(data.confidence)}%`;
+            if (barRef.current) {
+              barRef.current.style.width = `${Math.round(data.predicciones[0].score * 100)}%`;
+            }
           }, 80);
-        } catch (err) {
-          console.error("Fetch error:", err);
+        } catch {
           setPhase("error");
         }
       },
@@ -255,19 +203,20 @@ export default function PokeScan() {
     );
   };
 
-  // ── Reintentar ──────────────────────────────────────────────────────
+  // ── Reintentar ──────────────────────────────────────────────────────────
   const handleRetry = () => {
     setFrozenSrc(null);
-    setResult(null);
+    setPredictions([]);
     setPhase("idle");
     if (barRef.current) barRef.current.style.width = "0%";
   };
 
   const isScanning = phase === "scanning";
   const showResult = phase === "result" || phase === "error";
-  const pct = result ? Math.round(result.confidence) : 0;
+  const top = predictions[0] as Prediction | undefined;
+  const others = predictions.slice(1, 3);
+  const pct = top ? Math.round(top.score * 100) : 0;
 
-  // ════════════════════════════════════════════════════════════════════
   return (
     <div className="flex flex-col h-dvh w-full bg-red-700/80 border-4 border-red-950 rounded-4xl overflow-hidden">
       {/* ── Top bar ─────────────────────────────────────────────── */}
@@ -279,42 +228,55 @@ export default function PokeScan() {
           {(isScanning || showResult) && (
             <span
               className={`absolute aspect-square h-full rounded-full border-4 border-neutral-400 bg-cyan-300
-              shadow-[0_0_12px_4px_rgba(0,255,255,0.5),inset_0_2px_3px_rgba(255,255,255,0.7),inset_0_-3px_6px_rgba(0,150,150,0.5)]
-              ${isScanning && !showResult ? "animate-pulse shadow-[0_0_28px_10px_rgba(0,255,255,0.8)]" : ""}`}
+        shadow-[0_0_12px_4px_rgba(0,255,255,0.5),inset_0_2px_3px_rgba(255,255,255,0.7),inset_0_-3px_6px_rgba(0,150,150,0.5)]
+        ${isScanning && !showResult ? "animate-pulse shadow-[0_0_28px_10px_rgba(0,255,255,0.8),inset_0_2px_3px_rgba(255,255,255,0.7),inset_0_-3px_6px_rgba(0,150,150,0.5)]" : ""}
+      `}
             >
               <span className="absolute top-[18%] left-[18%] w-[28%] h-[22%] rounded-full bg-white/40 blur-[1px]" />
             </span>
           )}
         </span>
-
         <span className="flex flex-1 items-center justify-center text-xl font-bold text-red-950">
           POKESCAN
         </span>
-
         <div className="flex justify-end gap-2">
-          {[
-            !isReady && camError
-              ? "bg-red-400 shadow-[0_0_8px_2px_rgba(255,0,0,1)]"
-              : "bg-red-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]",
-            isScanning
-              ? "bg-yellow-300 shadow-[0_0_10px_4px_rgba(250,204,21,0.6)]"
-              : "bg-amber-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]",
-            isReady && !camError
-              ? "bg-green-400 shadow-[0_0_8px_2px_rgba(0,255,0,0.5)]"
-              : "bg-green-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]",
-          ].map((cls, i) => (
-            <span
-              key={i}
-              className={`h-1/3 aspect-square rounded-full relative ${cls}`}
-            >
-              <span className="absolute top-[20%] left-[20%] w-[30%] h-[25%] rounded-full bg-white/40 blur-[1px]" />
-            </span>
-          ))}
+          <span
+            className={`h-1/3 aspect-square rounded-full transition-all duration-300 relative ${
+              !isReady && camError
+                ? "bg-red-400 shadow-[0_0_8px_2px_rgba(255,0,0,1),inset_0_1px_2px_rgba(255,255,255,0.6),inset_0_-2px_4px_rgba(180,0,0,0.4)]"
+                : "bg-red-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.05)]"
+            }`}
+          >
+            <span className="absolute top-[20%] left-[20%] w-[30%] h-[25%] rounded-full bg-white/40 blur-[1px]" />
+          </span>
+          <span
+            className={`h-1/3 aspect-square rounded-full transition-all duration-300 relative ${
+              isScanning
+                ? "bg-yellow-300 shadow-[0_0_10px_4px_rgba(250,204,21,0.6),inset_0_1px_2px_rgba(255,255,255,0.7),inset_0_-2px_4px_rgba(180,130,0,0.4)]"
+                : "bg-amber-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.05)]"
+            }`}
+          >
+            <span className="absolute top-[20%] left-[20%] w-[30%] h-[25%] rounded-full bg-white/40 blur-[1px]" />
+          </span>
+          <span
+            className={`h-1/3 aspect-square rounded-full transition-all duration-300 relative ${
+              isReady && !camError
+                ? "bg-green-400 shadow-[0_0_8px_2px_rgba(0,255,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6),inset_0_-2px_4px_rgba(0,100,0,0.4)]"
+                : "bg-green-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.05)]"
+            }`}
+          >
+            <span className="absolute top-[20%] left-[20%] w-[30%] h-[25%] rounded-full bg-white/40 blur-[1px]" />
+          </span>
         </div>
       </div>
 
       {/* ── Viewfinder ──────────────────────────────────────────── */}
       <div className="relative aspect-square bg-indigo-100 border-4 border-red-950 rounded-3xl mx-4 mt-4 overflow-hidden">
+        {/* 
+          autoPlay  → necesario en Safari iOS para iniciar sin gesto 
+          playsInline → evita que iOS abra el video en pantalla completa
+          muted     → requerido para autoPlay en la mayoría de navegadores
+        */}
         <video
           ref={videoRef}
           autoPlay
@@ -344,16 +306,6 @@ export default function PokeScan() {
           style={{ opacity: 0, transition: "opacity 0.15s ease" }}
         />
 
-        {/* Sprite del Pokémon identificado (esquina superior derecha) */}
-        {phase === "result" && result?.details?.sprite_url && (
-          <img
-            src={result.details.sprite_url}
-            alt={result.pokemon_name}
-            className="absolute top-2 right-2 w-16 h-16 object-contain z-10 drop-shadow-lg"
-            style={{ imageRendering: "pixelated" }}
-          />
-        )}
-
         {/* Scan overlay */}
         {isScanning && (
           <div className="absolute inset-0 bg-black/40 z-10 flex flex-col items-center justify-center">
@@ -380,7 +332,7 @@ export default function PokeScan() {
         {(["tl", "tr", "bl", "br"] as const).map((pos) => (
           <div
             key={pos}
-            className={`absolute w-6 h-6 pointer-events-none z-10 ${
+            className={`absolute w-6 h-6 pointer-events-none z-10 transition-[border-color] duration-300 ${
               pos === "tl"
                 ? "top-3 left-3"
                 : pos === "tr"
@@ -413,12 +365,13 @@ export default function PokeScan() {
 
       {/* ── Botones ─────────────────────────────────────────────── */}
       <div className="flex mx-4 mt-4 gap-4 justify-center">
+        {/* Flash — oculto si el dispositivo no lo soporta (laptops, tablets sin torch) */}
         <button
           onClick={toggleTorch}
           disabled={!torchOk || isScanning}
           title={
             !torchOk
-              ? "Flash no disponible"
+              ? "Flash no disponible en este dispositivo"
               : torchOn
                 ? "Apagar flash"
                 : "Encender flash"
@@ -436,12 +389,14 @@ export default function PokeScan() {
           )}
         </button>
 
+        {/* Scan / Retry */}
         {showResult ? (
           <button
             onClick={handleRetry}
             className="flex rounded-xl px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 active:translate-y-0.5 active:border-b-2"
           >
-            <RefreshCwIcon className="stroke-3" /> RETRY
+            <RefreshCwIcon className="stroke-3" />
+            RETRY
           </button>
         ) : (
           <button
@@ -456,12 +411,16 @@ export default function PokeScan() {
           </button>
         )}
 
+        {/* 
+          Cambiar cámara — deshabilitado si el dispositivo solo tiene una cámara.
+          En laptops con webcam única este botón queda en opacity-40 con cursor not-allowed.
+        */}
         <button
           onClick={toggleFacing}
           disabled={!isReady || isScanning || !hasMultipleCameras}
           title={
             !hasMultipleCameras
-              ? "Solo una cámara disponible"
+              ? "Este dispositivo solo tiene una cámara"
               : "Cambiar cámara"
           }
           className="flex aspect-square rounded-full px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
@@ -493,49 +452,24 @@ export default function PokeScan() {
         {phase === "error" && (
           <div className="flex flex-col items-center justify-center gap-1 h-full text-red-700">
             <span className="text-3xl">⚠️</span>
-            <span className="text-sm font-bold">
-              No se identificó ningún Pokémon
-            </span>
+            <span className="text-sm font-bold">Error de conexión</span>
             <span className="text-xs text-red-950/40">
               Pulsa RETRY para intentarlo de nuevo
             </span>
           </div>
         )}
 
-        {phase === "result" && result && (
+        {phase === "result" && top && (
           <div className="flex flex-col h-full justify-between">
-            {/* Nombre + tipos + método */}
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="text-[10px] font-bold tracking-widest uppercase text-red-950/40 mb-0.5">
-                  Pokémon detectado
-                </p>
-                <p className="text-2xl font-black text-red-950 uppercase leading-tight">
-                  {formatLabel(result.pokemon_name)}
-                </p>
-                {/* Tipos */}
-                {result.details?.types && (
-                  <div className="flex gap-1 mt-1 flex-wrap">
-                    {result.details.types.map((t) => (
-                      <span
-                        key={t.slot}
-                        className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full ${TYPE_COLORS[t.name] ?? "bg-gray-300 text-gray-700"}`}
-                      >
-                        {t.name}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Método de detección */}
-              <span className="text-[9px] font-bold uppercase tracking-wide bg-red-950/10 text-red-950/50 px-2 py-1 rounded-full whitespace-nowrap">
-                {METHOD_LABELS[result.detection_method] ??
-                  result.detection_method}
-              </span>
+            <div>
+              <p className="text-[10px] font-bold tracking-widest uppercase text-red-950/40 mb-0.5">
+                Pokémon detectado
+              </p>
+              <p className="text-2xl font-black text-red-950 uppercase leading-tight">
+                {formatLabel(top.label)}
+              </p>
             </div>
 
-            {/* Barra de confianza */}
             <div>
               <div className="w-full bg-red-950/10 rounded-full h-2 overflow-hidden border border-red-950/10 mb-1">
                 <div
@@ -549,24 +483,21 @@ export default function PokeScan() {
               </p>
             </div>
 
-            {/* Stats básicos (si hay detalles) */}
-            {result.details && (
+            {others.length > 0 && (
               <div className="flex gap-2">
-                {[
-                  { label: "HP", value: result.details.stats.hp },
-                  { label: "ATK", value: result.details.stats.attack },
-                  { label: "DEF", value: result.details.stats.defense },
-                  { label: "SPD", value: result.details.stats.speed },
-                ].map(({ label, value }) => (
+                {others.map((p, i) => (
                   <div
-                    key={label}
-                    className="flex-1 bg-red-950/5 rounded-xl px-2 py-1 border border-red-950/10 text-center"
+                    key={i}
+                    className="flex-1 bg-red-950/5 rounded-xl px-2 py-1 border border-red-950/10"
                   >
                     <p className="text-[10px] font-bold text-red-950/30 uppercase tracking-wider">
-                      {label}
+                      #{i + 2}
                     </p>
-                    <p className="text-sm font-black text-red-950/70">
-                      {value}
+                    <p className="text-xs font-bold text-red-950/60 capitalize">
+                      {formatLabel(p.label)}
+                    </p>
+                    <p className="text-[10px] text-red-950/40">
+                      {Math.round(p.score * 100)}%
                     </p>
                   </div>
                 ))}
