@@ -3,6 +3,7 @@ import { CategoryIcon } from "@/components/CategoryIcon";
 import { ProductTCG } from "@/components/ProductTCG";
 import { categories, products, type Category } from "@/lib/data/products";
 import { cn } from "@/lib/utils";
+import HeroCarousel from "./HeroCarousel";
 
 type ActiveCategory = Category | "all";
 
@@ -22,8 +23,9 @@ export function MenuPage() {
       : products.filter((p) => p.category === activeCategory);
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-8">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-xs">
+    <div className="flex flex-col gap-4 sm:gap-8 pt-4">
+      <HeroCarousel />
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-xs shadow-sm">
         <div className="flex flex-col gap-4 sm:gap-8">
           <h1 className="text-3xl">Menú</h1>
           <div className="flex">
