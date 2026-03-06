@@ -26,8 +26,8 @@ export function MenuPage() {
     <div className="flex flex-col gap-4 sm:gap-8 pt-4">
       <HeroCarousel />
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-xs shadow-sm">
-        <div className="flex flex-col gap-4 sm:gap-8">
-          <h1 className="text-3xl">Menú</h1>
+        <div className="flex flex-col">
+          <h1 className="font-bebas-neue text-4xl">Menú</h1>
           <div className="flex">
             {allCategories.map((ctg) => (
               <button

@@ -12,6 +12,8 @@
   "dependencies": {
     "@astrojs/node": "^9.5.4",
     "@astrojs/react": "^4.4.2",
+    "@fontsource/bebas-neue": "^5.2.7",
+    "@fontsource/rajdhani": "^5.2.7",
     "@tabler/icons-react": "^3.37.1",
     "@tailwindcss/vite": "^4.2.1",
     "@types/react": "^19.2.14",

@@ -136,19 +136,15 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
     >
       <div
         className={cn(
-          "border-b-2 flex justify-between items-center rounded-t-xl px-3 sm:px-6 py-1 sm:py-2 transition-all duration-300",
+          "border-b-2 flex justify-between rounded-t-xl px-3 sm:px-6 pt-2 sm:pt-4 transition-all duration-300",
           !isNR ? rarityStyles[rarity].gradient : "py-1.5 sm:py-2.5",
         )}
       >
         <CategoryIcon category={product.category} />
-        <div className="flex gap-0.5 items-center">
+        <span className="flex gap-0.5 font-bebas-neue text-xl sm:text-xl">
           <StarIcon className={cn(!isNR && rarityStyles[rarity].star)} />
-          {!isNR && (
-            <span className="text-xl sm:text-xl">
-              {product.rating.toFixed(1)}
-            </span>
-          )}
-        </div>
+          {!isNR && product.rating.toFixed(1)}
+        </span>
       </div>
       <div className="px-3 sm:px-6 py-3 sm:py-6 transition-all duration-300">
         <div className="dark:hidden">{holoOverlay}</div>
@@ -162,20 +158,18 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
             />
           </div>
           <div className="text-center uppercase">
-            <span className="block font-display text-lg sm:text-xl text-accent-foreground">
+            <span className="block font-bebas-neue text-xl sm:text-2xl text-accent-foreground">
               {product.name}
             </span>
-            <span className="block text-[10px] sm:text-xs text-accent-foreground italic">
+            <span className="block font-rajdhani text-xs sm:text-sm text-accent-foreground italic">
               {product.name}
             </span>
           </div>
         </div>
       </div>
-      <div className="border-t-2 flex justify-between rounded-b-xl px-3 sm:px-6 py-1 sm:py-2">
-        <span className="text-xl sm:text-xl">$ {product.price}</span>
-        <span className="text-xl sm:text-xl">
-          + {(product.price * 0.1).toFixed(2)}
-        </span>
+      <div className="border-t-2 flex justify-between rounded-b-xl font-bebas-neue text-xl sm:text-xl px-3 sm:px-6 pt-1 sm:pt-2">
+        <span>$ {product.price}</span>
+        <span>+ {(product.price * 0.1).toFixed(2)}</span>
       </div>
     </div>
   );

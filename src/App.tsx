@@ -12,7 +12,7 @@ const MorePage = lazy(() => import("@/components/MorePage"));
 function PlaceholderPage({ title }: { title: string }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-      <h1 className="text-4xl font-display">{title}</h1>
+      <h1 className="text-4xl ">{title}</h1>
       <p className="text-muted-foreground">Página en construcción</p>
     </div>
   );
