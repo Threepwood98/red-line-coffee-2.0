@@ -3,9 +3,11 @@ import Webcam from "react-webcam";
 import {
   FlashlightIcon,
   FlashlightOffIcon,
+  PowerIcon,
   RefreshCwIcon,
   ScanLineIcon,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const API_URL =
   "https://pokemon-identifier-production.up.railway.app/api/identify-pokemon";
@@ -149,58 +151,62 @@ export default function PokeScan() {
 
   // ── Capturar + enviar a la API ──────────────────────────────────────
   const handleScan = useCallback(async () => {
-    if (!camReady || phase === "scanning") return;
+    if (showResult) {
+      handleRetry();
+    } else {
+      if (!camReady || phase === "scanning") return;
 
-    // Flash visual
-    if (flashRef.current) {
-      flashRef.current.style.opacity = "1";
-      setTimeout(() => {
-        if (flashRef.current) flashRef.current.style.opacity = "0";
-      }, 200);
-    }
+      // Flash visual
+      if (flashRef.current) {
+        flashRef.current.style.opacity = "1";
+        setTimeout(() => {
+          if (flashRef.current) flashRef.current.style.opacity = "0";
+        }, 200);
+      }
 
-    // getScreenshot() → base64 string directamente, sin canvas manual
-    const screenshot = webcamRef.current?.getScreenshot({
-      width: 1280,
-      height: 960,
-    });
+      // getScreenshot() → base64 string directamente, sin canvas manual
+      const screenshot = webcamRef.current?.getScreenshot({
+        width: 1280,
+        height: 960,
+      });
 
-    if (!screenshot) {
-      setPhase("error");
-      return;
-    }
-
-    setFrozenSrc(screenshot);
-    setPhase("scanning");
-    setResult(null);
-    if (barRef.current) barRef.current.style.width = "0%";
-
-    try {
-      // base64 → Blob → FormData (mismo formato que espera la API)
-      const blob = base64ToBlob(screenshot);
-      const form = new FormData();
-      form.append("file", blob, "foto.jpg");
-
-      const res = await fetch(API_URL, { method: "POST", body: form });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        console.error("API error:", errData.error ?? `HTTP ${res.status}`);
+      if (!screenshot) {
         setPhase("error");
         return;
       }
 
-      const data: APIResponse = await res.json();
-      setResult(data);
-      setPhase("result");
+      setFrozenSrc(screenshot);
+      setPhase("scanning");
+      setResult(null);
+      if (barRef.current) barRef.current.style.width = "0%";
 
-      setTimeout(() => {
-        if (barRef.current)
-          barRef.current.style.width = `${Math.round(data.confidence)}%`;
-      }, 80);
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setPhase("error");
+      try {
+        // base64 → Blob → FormData (mismo formato que espera la API)
+        const blob = base64ToBlob(screenshot);
+        const form = new FormData();
+        form.append("file", blob, "foto.jpg");
+
+        const res = await fetch(API_URL, { method: "POST", body: form });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          console.error("API error:", errData.error ?? `HTTP ${res.status}`);
+          setPhase("error");
+          return;
+        }
+
+        const data: APIResponse = await res.json();
+        setResult(data);
+        setPhase("result");
+
+        setTimeout(() => {
+          if (barRef.current)
+            barRef.current.style.width = `${Math.round(data.confidence)}%`;
+        }, 80);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setPhase("error");
+      }
     }
   }, [camReady, phase]);
 
@@ -215,7 +221,7 @@ export default function PokeScan() {
   // ── Constraints para react-webcam ───────────────────────────────────
   const videoConstraints = {
     facingMode,
-    width: { ideal: 1280 },
+    width: { ideal: 960 },
     height: { ideal: 960 },
   };
 
@@ -243,8 +249,8 @@ export default function PokeScan() {
           )}
         </span>
 
-        <span className="flex flex-1 items-center justify-center text-xl font-bold text-red-950">
-          POKESCAN
+        <span className="flex flex-1 items-center justify-center font-rajdhani-700 text-3xl text-red-950">
+          PokéDex
         </span>
 
         <div className="flex justify-end gap-2">
@@ -340,24 +346,26 @@ export default function PokeScan() {
         {(["tl", "tr", "bl", "br"] as const).map((pos) => (
           <div
             key={pos}
-            className={`absolute w-6 h-6 pointer-events-none z-10 ${
-              pos === "tl"
-                ? "top-3 left-3"
-                : pos === "tr"
-                  ? "top-3 right-3"
-                  : pos === "bl"
-                    ? "bottom-3 left-3"
-                    : "bottom-3 right-3"
-            }`}
-            style={{
-              borderColor: isScanning ? "#00ffcc" : "rgba(255,255,255,0.7)",
-              borderStyle: "solid",
-              borderWidth: 0,
-              borderTopWidth: pos.startsWith("t") ? 2 : 0,
-              borderBottomWidth: pos.startsWith("b") ? 2 : 0,
-              borderLeftWidth: pos.endsWith("l") ? 2 : 0,
-              borderRightWidth: pos.endsWith("r") ? 2 : 0,
-            }}
+            className={cn(
+              `absolute w-8 h-8 pointer-events-none z-10 ${isScanning ? "border-cyan-300" : "border-white/50"} `,
+              pos.startsWith("t") &&
+                `border-t-2 top-4 ${pos === "tl" ? "border-l-2 left-4" : "border-r-2 right-4"}`,
+              pos.startsWith("b") &&
+                `border-b-2 bottom-4 ${pos === "bl" ? "border-l-2 left-4" : "border-r-2 right-4"}`,
+            )}
+          />
+        ))}
+
+        {(["tl", "tr", "bl", "br"] as const).map((pos) => (
+          <div
+            key={pos}
+            className={cn(
+              `absolute w-8 h-8 pointer-events-none z-10 ${isScanning ? "border-cyan-300" : "border-white/50"} `,
+              pos.startsWith("t") &&
+                `border-t-2 top-1/4 ${pos === "tl" ? "border-l-2 left-1/4" : "border-r-2 right-1/4"}`,
+              pos.startsWith("b") &&
+                `border-b-2 bottom-1/4 ${pos === "bl" ? "border-l-2 left-1/4" : "border-r-2 right-1/4"}`,
+            )}
           />
         ))}
 
@@ -369,55 +377,6 @@ export default function PokeScan() {
             </span>
           </div>
         )}
-      </div>
-
-      {/* ── Botones ─────────────────────────────────────────────── */}
-      <div className="flex mx-4 mt-4 gap-4 justify-center">
-        <button
-          onClick={toggleTorch}
-          disabled={isScanning}
-          title={torchOn ? "Apagar flash" : "Encender flash"}
-          className={`flex aspect-square rounded-full items-center justify-center border-b-4 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2 ${
-            torchOn
-              ? "border-yellow-600 bg-yellow-300 text-yellow-800 shadow-[0_0_14px_4px_rgba(250,204,21,0.5)]"
-              : "border-amber-500 bg-amber-300 text-red-950"
-          }`}
-        >
-          {torchOn ? (
-            <FlashlightOffIcon className="stroke-3" />
-          ) : (
-            <FlashlightIcon className="stroke-3" />
-          )}
-        </button>
-
-        {showResult ? (
-          <button
-            onClick={handleRetry}
-            className="flex rounded-xl px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 active:translate-y-0.5 active:border-b-2"
-          >
-            <RefreshCwIcon className="stroke-3" /> RETRY
-          </button>
-        ) : (
-          <button
-            onClick={handleScan}
-            disabled={!camReady || isScanning}
-            className="flex rounded-xl px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
-          >
-            <ScanLineIcon
-              className={`stroke-3 ${isScanning ? "animate-pulse" : ""}`}
-            />
-            {isScanning ? "..." : "SCAN"}
-          </button>
-        )}
-
-        <button
-          onClick={toggleFacing}
-          disabled={!camReady || isScanning}
-          title="Cambiar cámara"
-          className="flex aspect-square rounded-full px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
-        >
-          <RefreshCwIcon className="stroke-3" />
-        </button>
       </div>
 
       {/* ── Panel de resultados ──────────────────────────────────── */}
@@ -518,6 +477,43 @@ export default function PokeScan() {
             )}
           </div>
         )}
+      </div>
+
+      {/* ── Botones ─────────────────────────────────────────────── */}
+      <div className="flex mx-4 gap-4 justify-center">
+        <button
+          onClick={toggleTorch}
+          disabled={isScanning}
+          title={torchOn ? "Apagar flash" : "Encender flash"}
+          className={`flex aspect-square rounded-xl items-center justify-center border-b-4 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2 ${
+            torchOn
+              ? "border-yellow-600 bg-yellow-300 text-yellow-800 shadow-[0_0_14px_4px_rgba(250,204,21,0.5)]"
+              : "border-amber-500 bg-amber-300 text-red-950"
+          }`}
+        >
+          <FlashlightIcon className="stroke-3" />
+        </button>
+        <button
+          onClick={handleScan}
+          disabled={!camReady || isScanning}
+          className="flex aspect-square rounded-xl px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
+        >
+          <ScanLineIcon className="stroke-3" />
+        </button>
+        <button
+          onClick={toggleFacing}
+          disabled={!camReady || isScanning}
+          title="Cambiar cámara"
+          className="flex aspect-square rounded-xl px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
+        >
+          <RefreshCwIcon className="stroke-3" />
+        </button>
+        <button
+          title="Cerrar"
+          className="flex aspect-square rounded-xl px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
+        >
+          <PowerIcon className="stroke-3" />
+        </button>
       </div>
 
       <style>{`
