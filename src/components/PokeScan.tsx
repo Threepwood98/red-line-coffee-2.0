@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
+import Webcam from "react-webcam";
 import {
   FlashlightIcon,
   FlashlightOffIcon,
@@ -6,7 +7,6 @@ import {
   ScanLineIcon,
 } from "lucide-react";
 
-// ── Actualiza esta URL con la de tu servicio en Railway ──────────────
 const API_URL =
   "https://pokemon-identifier-production.up.railway.app/api/identify-pokemon";
 
@@ -31,20 +31,14 @@ interface PokemonDetails {
 interface APIResponse {
   success: boolean;
   pokemon_name: string;
-  confidence: number; // 0–100
-  detection_method: string; // vit_direct | vit_confirmed | serpapi_fallback | serpapi_only
+  confidence: number;
+  detection_method: string;
   matched_keywords: string[];
   details: PokemonDetails | null;
 }
 
 type Phase = "idle" | "scanning" | "result" | "error";
-
-interface ExtendedCapabilities extends MediaTrackCapabilities {
-  torch?: boolean;
-}
-interface ExtendedConstraints extends MediaTrackConstraintSet {
-  torch?: boolean;
-}
+type FacingMode = "environment" | "user";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -52,11 +46,20 @@ function formatLabel(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1).replace(/-/g, " ");
 }
 
+function base64ToBlob(base64: string): Blob {
+  // "data:image/jpeg;base64,/9j/..." → Blob
+  const [header, data] = base64.split(",");
+  const mime = header.match(/:(.*?);/)?.[1] ?? "image/jpeg";
+  const binary = atob(data);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
 const METHOD_LABELS: Record<string, string> = {
   vit_direct: "IA Directa",
-  vit_confirmed: "IA + Búsqueda",
-  serpapi_fallback: "Búsqueda Web",
-  serpapi_only: "Búsqueda Web",
+  gemini_vision: "Gemini Flash",
+  vit_fallback: "IA Fallback",
 };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -82,115 +85,71 @@ const TYPE_COLORS: Record<string, string> = {
 
 // ════════════════════════════════════════════════════════════════════
 export default function PokeScan() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const trackRef = useRef<MediaStreamTrack | null>(null);
+  const webcamRef = useRef<Webcam>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
 
-  const [isReady, setIsReady] = useState<boolean>(false);
-  const [facingMode, setFacingMode] = useState<"environment" | "user">(
-    "environment",
-  );
-  const [hasMultipleCameras, setHasMultipleCameras] = useState<boolean>(false);
-  const [torchOk, setTorchOk] = useState<boolean>(false);
+  const [facingMode, setFacingMode] = useState<FacingMode>("environment");
   const [torchOn, setTorchOn] = useState<boolean>(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [frozenSrc, setFrozenSrc] = useState<string | null>(null);
   const [result, setResult] = useState<APIResponse | null>(null);
   const [camError, setCamError] = useState<string | null>(null);
+  const [camReady, setCamReady] = useState<boolean>(false);
 
-  // ── Detectar cámaras ────────────────────────────────────────────────
-  const detectCameras = useCallback(async () => {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      setHasMultipleCameras(
-        devices.filter((d) => d.kind === "videoinput").length > 1,
-      );
-    } catch {
-      setHasMultipleCameras(false);
-    }
+  // react-webcam llama esto cuando el stream está listo
+  const handleUserMedia = useCallback(() => {
+    setCamReady(true);
+    setCamError(null);
   }, []);
 
-  // ── Iniciar cámara ──────────────────────────────────────────────────
-  const startCamera = useCallback(
-    async (facing: "environment" | "user") => {
-      try {
-        trackRef.current?.stop();
-        setIsReady(false);
-        setTorchOn(false);
-
-        let stream: MediaStream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              facingMode: { ideal: facing },
-              width: { ideal: 1280 },
-              height: { ideal: 960 },
-            },
-          });
-        } catch {
-          try {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-          } catch {
-            stream = await navigator.mediaDevices.getUserMedia({ video: {} });
-          }
-        }
-
-        const track = stream.getVideoTracks()[0];
-        trackRef.current = track;
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play().catch(() => {});
-        }
-
-        const caps = track.getCapabilities() as ExtendedCapabilities;
-        setTorchOk(!!caps.torch);
-        setIsReady(true);
-        setCamError(null);
-        await detectCameras();
-      } catch {
-        setCamError(
-          "Sin acceso a la cámara. Revisa los permisos del navegador.",
-        );
-      }
-    },
-    [detectCameras],
-  );
-
-  useEffect(() => {
-    startCamera(facingMode);
-    return () => {
-      trackRef.current?.stop();
-    };
+  const handleUserMediaError = useCallback(() => {
+    setCamError("Sin acceso a la cámara. Revisa los permisos del navegador.");
+    setCamReady(false);
   }, []);
 
   // ── Toggle torch ────────────────────────────────────────────────────
-  const toggleTorch = async () => {
-    if (!torchOk || !trackRef.current) return;
+  // react-webcam no expone el track directamente — accedemos via el stream
+  const toggleTorch = useCallback(async () => {
+    const stream = webcamRef.current?.stream;
+    if (!stream) return;
+    const track = stream.getVideoTracks()[0];
+    if (!track) return;
+    const caps = track.getCapabilities() as MediaTrackCapabilities & {
+      torch?: boolean;
+    };
+    if (!caps.torch) return;
     const next = !torchOn;
     try {
-      await trackRef.current.applyConstraints({
-        advanced: [{ torch: next } as ExtendedConstraints],
+      await track.applyConstraints({
+        advanced: [
+          { torch: next } as MediaTrackConstraintSet & { torch: boolean },
+        ],
       });
       setTorchOn(next);
     } catch {}
-  };
+  }, [torchOn]);
+
+  const torchSupported = useCallback(() => {
+    const stream = webcamRef.current?.stream;
+    if (!stream) return false;
+    const track = stream.getVideoTracks()[0];
+    if (!track) return false;
+    const caps = track.getCapabilities() as MediaTrackCapabilities & {
+      torch?: boolean;
+    };
+    return !!caps.torch;
+  }, []);
 
   // ── Cambiar cámara ──────────────────────────────────────────────────
-  const toggleFacing = () => {
-    const next: "environment" | "user" =
-      facingMode === "environment" ? "user" : "environment";
-    setFacingMode(next);
-    startCamera(next);
-  };
+  const toggleFacing = useCallback(() => {
+    setTorchOn(false);
+    setFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
+  }, []);
 
   // ── Capturar + enviar a la API ──────────────────────────────────────
-  const handleScan = async () => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas || !isReady) return;
+  const handleScan = useCallback(async () => {
+    if (!camReady || phase === "scanning") return;
 
     // Flash visual
     if (flashRef.current) {
@@ -200,67 +159,64 @@ export default function PokeScan() {
       }, 200);
     }
 
-    // Capturar frame
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d")!;
-    if (facingMode === "user") {
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-    }
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // getScreenshot() → base64 string directamente, sin canvas manual
+    const screenshot = webcamRef.current?.getScreenshot({
+      width: 1280,
+      height: 960,
+    });
 
-    setFrozenSrc(canvas.toDataURL("image/jpeg", 0.9));
+    if (!screenshot) {
+      setPhase("error");
+      return;
+    }
+
+    setFrozenSrc(screenshot);
     setPhase("scanning");
     setResult(null);
+    if (barRef.current) barRef.current.style.width = "0%";
 
-    canvas.toBlob(
-      async (blob: Blob | null) => {
-        if (!blob) {
-          setPhase("error");
-          return;
-        }
+    try {
+      // base64 → Blob → FormData (mismo formato que espera la API)
+      const blob = base64ToBlob(screenshot);
+      const form = new FormData();
+      form.append("file", blob, "foto.jpg");
 
-        try {
-          const form = new FormData();
-          form.append("file", blob, "foto.jpg"); // campo "file" que espera FastAPI
+      const res = await fetch(API_URL, { method: "POST", body: form });
 
-          const res = await fetch(API_URL, { method: "POST", body: form });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        console.error("API error:", errData.error ?? `HTTP ${res.status}`);
+        setPhase("error");
+        return;
+      }
 
-          // La API devuelve errores con { success: false, error: "..." }
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            console.error("API error:", errData.error ?? `HTTP ${res.status}`);
-            setPhase("error");
-            return;
-          }
+      const data: APIResponse = await res.json();
+      setResult(data);
+      setPhase("result");
 
-          const data: APIResponse = await res.json();
-
-          setResult(data);
-          setPhase("result");
-
-          // Animar barra de confianza
-          setTimeout(() => {
-            if (barRef.current)
-              barRef.current.style.width = `${Math.round(data.confidence)}%`;
-          }, 80);
-        } catch (err) {
-          console.error("Fetch error:", err);
-          setPhase("error");
-        }
-      },
-      "image/jpeg",
-      0.9,
-    );
-  };
+      setTimeout(() => {
+        if (barRef.current)
+          barRef.current.style.width = `${Math.round(data.confidence)}%`;
+      }, 80);
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setPhase("error");
+    }
+  }, [camReady, phase]);
 
   // ── Reintentar ──────────────────────────────────────────────────────
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     setFrozenSrc(null);
     setResult(null);
     setPhase("idle");
     if (barRef.current) barRef.current.style.width = "0%";
+  }, []);
+
+  // ── Constraints para react-webcam ───────────────────────────────────
+  const videoConstraints = {
+    facingMode,
+    width: { ideal: 1280 },
+    height: { ideal: 960 },
   };
 
   const isScanning = phase === "scanning";
@@ -280,7 +236,7 @@ export default function PokeScan() {
             <span
               className={`absolute aspect-square h-full rounded-full border-4 border-neutral-400 bg-cyan-300
               shadow-[0_0_12px_4px_rgba(0,255,255,0.5),inset_0_2px_3px_rgba(255,255,255,0.7),inset_0_-3px_6px_rgba(0,150,150,0.5)]
-              ${isScanning && !showResult ? "animate-pulse shadow-[0_0_28px_10px_rgba(0,255,255,0.8)]" : ""}`}
+              ${isScanning ? "animate-pulse" : ""}`}
             >
               <span className="absolute top-[18%] left-[18%] w-[28%] h-[22%] rounded-full bg-white/40 blur-[1px]" />
             </span>
@@ -293,13 +249,13 @@ export default function PokeScan() {
 
         <div className="flex justify-end gap-2">
           {[
-            !isReady && camError
+            !camReady && camError
               ? "bg-red-400 shadow-[0_0_8px_2px_rgba(255,0,0,1)]"
               : "bg-red-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]",
             isScanning
               ? "bg-yellow-300 shadow-[0_0_10px_4px_rgba(250,204,21,0.6)]"
               : "bg-amber-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]",
-            isReady && !camError
+            camReady && !camError
               ? "bg-green-400 shadow-[0_0_8px_2px_rgba(0,255,0,0.5)]"
               : "bg-green-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]",
           ].map((cls, i) => (
@@ -315,18 +271,24 @@ export default function PokeScan() {
 
       {/* ── Viewfinder ──────────────────────────────────────────── */}
       <div className="relative aspect-square bg-indigo-100 border-4 border-red-950 rounded-3xl mx-4 mt-4 overflow-hidden">
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{
-            opacity: frozenSrc ? 0 : 1,
-            transform: facingMode === "user" ? "scaleX(-1)" : "none",
-          }}
-        />
+        {/* react-webcam — reemplaza video + canvas + getUserMedia manual */}
+        {!frozenSrc && (
+          <Webcam
+            ref={webcamRef}
+            audio={false}
+            screenshotFormat="image/jpeg"
+            screenshotQuality={0.92}
+            videoConstraints={videoConstraints}
+            mirrored={
+              facingMode === "user"
+            } /* espejo automático en cámara frontal */
+            onUserMedia={handleUserMedia}
+            onUserMediaError={handleUserMediaError}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
 
+        {/* Frame congelado mientras se procesa */}
         {frozenSrc && (
           <img
             src={frozenSrc}
@@ -335,8 +297,6 @@ export default function PokeScan() {
           />
         )}
 
-        <canvas ref={canvasRef} className="hidden" />
-
         {/* Flash overlay */}
         <div
           ref={flashRef}
@@ -344,7 +304,7 @@ export default function PokeScan() {
           style={{ opacity: 0, transition: "opacity 0.15s ease" }}
         />
 
-        {/* Sprite del Pokémon identificado (esquina superior derecha) */}
+        {/* Sprite en esquina */}
         {phase === "result" && result?.details?.sprite_url && (
           <img
             src={result.details.sprite_url}
@@ -415,14 +375,8 @@ export default function PokeScan() {
       <div className="flex mx-4 mt-4 gap-4 justify-center">
         <button
           onClick={toggleTorch}
-          disabled={!torchOk || isScanning}
-          title={
-            !torchOk
-              ? "Flash no disponible"
-              : torchOn
-                ? "Apagar flash"
-                : "Encender flash"
-          }
+          disabled={isScanning}
+          title={torchOn ? "Apagar flash" : "Encender flash"}
           className={`flex aspect-square rounded-full items-center justify-center border-b-4 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2 ${
             torchOn
               ? "border-yellow-600 bg-yellow-300 text-yellow-800 shadow-[0_0_14px_4px_rgba(250,204,21,0.5)]"
@@ -446,7 +400,7 @@ export default function PokeScan() {
         ) : (
           <button
             onClick={handleScan}
-            disabled={!isReady || isScanning}
+            disabled={!camReady || isScanning}
             className="flex rounded-xl px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
           >
             <ScanLineIcon
@@ -458,12 +412,8 @@ export default function PokeScan() {
 
         <button
           onClick={toggleFacing}
-          disabled={!isReady || isScanning || !hasMultipleCameras}
-          title={
-            !hasMultipleCameras
-              ? "Solo una cámara disponible"
-              : "Cambiar cámara"
-          }
+          disabled={!camReady || isScanning}
+          title="Cambiar cámara"
           className="flex aspect-square rounded-full px-4 py-2 border-b-4 border-amber-500 bg-amber-300 text-red-950 font-bold text-xl items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:translate-y-0.5 active:border-b-2"
         >
           <RefreshCwIcon className="stroke-3" />
@@ -504,7 +454,6 @@ export default function PokeScan() {
 
         {phase === "result" && result && (
           <div className="flex flex-col h-full justify-between">
-            {/* Nombre + tipos + método */}
             <div className="flex items-start justify-between gap-2">
               <div>
                 <p className="text-[10px] font-bold tracking-widest uppercase text-red-950/40 mb-0.5">
@@ -513,7 +462,6 @@ export default function PokeScan() {
                 <p className="text-2xl font-black text-red-950 uppercase leading-tight">
                   {formatLabel(result.pokemon_name)}
                 </p>
-                {/* Tipos */}
                 {result.details?.types && (
                   <div className="flex gap-1 mt-1 flex-wrap">
                     {result.details.types.map((t) => (
@@ -527,15 +475,12 @@ export default function PokeScan() {
                   </div>
                 )}
               </div>
-
-              {/* Método de detección */}
               <span className="text-[9px] font-bold uppercase tracking-wide bg-red-950/10 text-red-950/50 px-2 py-1 rounded-full whitespace-nowrap">
                 {METHOD_LABELS[result.detection_method] ??
                   result.detection_method}
               </span>
             </div>
 
-            {/* Barra de confianza */}
             <div>
               <div className="w-full bg-red-950/10 rounded-full h-2 overflow-hidden border border-red-950/10 mb-1">
                 <div
@@ -549,7 +494,6 @@ export default function PokeScan() {
               </p>
             </div>
 
-            {/* Stats básicos (si hay detalles) */}
             {result.details && (
               <div className="flex gap-2">
                 {[
