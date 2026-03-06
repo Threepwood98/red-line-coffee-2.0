@@ -4,8 +4,8 @@
 // de esto: const CACHE_NAME = "example-v1";
 // a esto: const CACHE_NAME = "example-v2"; ← activate event borra el v1 automáticamente
 
-const CACHE_NAME = "redline-v1"; // cambiá por el nombre de tu app
-const SHELL_URLS = ["/", "/menu", "/store", "/ps4", "/pokedex"];
+const CACHE_NAME = "redline-v2";
+const SHELL_URLS = ["/", "/store", "/ps4", "/pokedex", "/more"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

@@ -1,13 +1,17 @@
 import { useLocation } from "wouter";
-import { CoffeeIcon, HouseIcon, StoreIcon, Gamepad2Icon } from "lucide-react";
-import { IconPokeball } from "@tabler/icons-react";
+import {
+  CoffeeIcon,
+  StoreIcon,
+  Gamepad2Icon,
+  EllipsisIcon,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { path: "/", label: "Home", Icon: HouseIcon },
-  { path: "/menu", label: "Menú", Icon: CoffeeIcon },
+  { path: "/", label: "Menú", Icon: CoffeeIcon },
   { path: "/store", label: "Tienda", Icon: StoreIcon },
   { path: "/ps4", label: "PS4", Icon: Gamepad2Icon },
-  { path: "/pokedex", label: "Pokédex", Icon: IconPokeball },
+  { path: "/more", label: "Más", Icon: EllipsisIcon },
 ];
 
 export default function BottomNav() {
@@ -24,7 +28,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 z-10 flex w-full h-16 py-4 items-center justify-around bg-primary-foreground"
+      className="fixed bottom-0 z-10 flex w-full h-16 items-center justify-around bg-primary-foreground"
       role="navigation"
     >
       {NAV_ITEMS.map((item, i) => {
@@ -32,11 +36,12 @@ export default function BottomNav() {
         return (
           <button
             key={item.path}
-            className={`flex flex-col items-center transition-colors ${
+            className={cn(
+              "flex flex-col w-full items-center justify-center border-b-2 border-transparent cursor-pointer transition-colors",
               isActive
-                ? "text-primary"
-                : "text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-primary"
-            }`}
+                ? "text-primary border-b-2 border-primary"
+                : "hover:border-primary dark:hover:border-primary text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-primary",
+            )}
             onClick={() => navigate(item.path)}
           >
             <item.Icon />

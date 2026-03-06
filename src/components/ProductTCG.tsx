@@ -123,7 +123,7 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
     <div
       ref={cardRef}
       className={cn(
-        "border-2 rounded-xl relative cursor-pointer transition-all duration-300 ease-out",
+        "border-2 rounded-xl relative cursor-pointer transition-all duration-300 ease-out bg-primary-foreground",
         isHovered && !isNR
           ? "shadow-2xl " + rarityStyles[rarity].glow
           : "shadow-xl",

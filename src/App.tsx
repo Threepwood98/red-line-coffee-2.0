@@ -5,9 +5,9 @@ import BottomNav from "./components/BottomNav";
 import { fetchPokemonList } from "./lib/pokeapi";
 import type { FullPokemon } from "./types/pokemon";
 
-const HomePage = lazy(() => import("@/components/HomePage"));
 const MenuPage = lazy(() => import("@/components/MenuPage"));
 const Pokedex = lazy(() => import("@/components/Pokedex"));
+const MorePage = lazy(() => import("@/components/MorePage"));
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -49,8 +49,8 @@ export default function App() {
           }
         >
           <Switch>
-            <Route path="/" component={HomePage} />
-            <Route path="/menu" component={MenuPage} />
+            <Route path="/" component={MenuPage} />
+            {/* <Route path="/menu" component={MenuPage} /> */}
             <Route path="/store">
               {() => <PlaceholderPage title="Tienda" />}
             </Route>
@@ -58,6 +58,7 @@ export default function App() {
             <Route path="/pokedex">
               {() => <Pokedex pokemonList={pokemonList} />}
             </Route>
+            <Route path="/more" component={MorePage} />
             {/* <Route>
               {() => <PlaceholderPage title="404 - No encontrado" />}
             </Route> */}
@@ -67,7 +68,7 @@ export default function App() {
                 if (typeof window !== "undefined") {
                   window.location.replace("/");
                 }
-                return <HomePage />;
+                return <MenuPage />;
               }}
             </Route>
           </Switch>
