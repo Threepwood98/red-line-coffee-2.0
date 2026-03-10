@@ -1,14 +1,20 @@
 import type { APIRoute } from "astro";
 import { prisma } from "../../lib/prisma";
+import type { Category } from "@/types";
 
 type Language = "en_US" | "es_ES" | "ja_JP";
-type Category = "coffee" | "drink" | "food" | "sweet";
+// type Category = "coffee" | "drink" | "food" | "sweet";
 
 export const GET: APIRoute = async () => {
   const products = await prisma.product_template.findMany({
     where: {
       active: true,
       sale_ok: true,
+      product_category: {
+        complete_name: {
+          startsWith: "FP",
+        },
+      },
     },
     include: {
       product_category: true,

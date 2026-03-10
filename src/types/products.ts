@@ -1,4 +1,4 @@
-export type Category = "coffee" | "drink" | "food" | "sweet";
+export type Category = "Coffee" | "Drink" | "Food" | "Sweet";
 
 export interface Product {
   id: string;
@@ -18,10 +18,10 @@ export interface CategoryItem {
 }
 
 export const categories: CategoryItem[] = [
-  { id: "1", name: "Cafés", value: "coffee" },
-  { id: "2", name: "Bebidas", value: "drink" },
-  { id: "3", name: "Comidas", value: "food" },
-  { id: "4", name: "Dulces", value: "sweet" },
+  { id: "1", name: "Cafés", value: "Coffee" },
+  { id: "2", name: "Bebidas", value: "Drink" },
+  { id: "3", name: "Comidas", value: "Food" },
+  { id: "4", name: "Dulces", value: "Sweet" },
 ];
 
 export type Rarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
