@@ -1,10 +1,8 @@
 import { useRef, useState, useCallback } from "react";
 import { StarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { type Product } from "@/lib/data/products";
+import { type Product, type Rarity } from "@/types";
 import { CategoryIcon } from "./CategoryIcon";
-
-export type Rarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 
 interface ProductTCGProps {
   product: Product;
@@ -153,16 +151,16 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
           <div className="relative aspect-square rounded-xl w-full overflow-hidden">
             <img
               src={product.image}
-              alt={product.name}
+              alt={product.nameES}
               className="object-cover w-full h-full"
             />
           </div>
           <div className="text-center uppercase">
             <span className="block font-bebas-neue text-xl sm:text-2xl text-accent-foreground">
-              {product.name}
+              {product.nameES}
             </span>
             <span className="block font-rajdhani text-xs sm:text-sm text-accent-foreground italic">
-              {product.name}
+              {product.nameJP}
             </span>
           </div>
         </div>

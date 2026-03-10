@@ -1,134 +1,123 @@
-export type Category = "coffees" | "drinks" | "foods" | "sweets";
-
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  rating: number;
-  category: Category;
-  image: string;
-  description: string;
-}
-
-export interface CategoryItem {
-  id: string;
-  name: string;
-  value: Category;
-}
-
-export const categories: CategoryItem[] = [
-  { id: "1", name: "Cafés", value: "coffees" },
-  { id: "2", name: "Bebidas", value: "drinks" },
-  { id: "3", name: "Comidas", value: "foods" },
-  { id: "4", name: "Dulces", value: "sweets" },
-];
+export { categories, type Category, type Product, type CategoryItem, type Rarity } from "@/types";
 
 export const products: Product[] = [
   {
     id: "1",
-    name: "Sakura Dream Cake",
+    nameES: "Sakura Dream Cake",
+    nameJP: "サクラドリームケーキ",
     price: 189.0,
     rating: 0,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/cake1/400/400",
     description: "Pastel de cerezo con crema de vainilla y fresas frescas",
   },
   {
     id: "2",
-    name: "Otaku Cookie Supreme",
+    nameES: "Otaku Cookie Supreme",
+    nameJP: "オタククッキー至上",
     price: 45.0,
     rating: 1,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/cookie1/400/400",
     description: "Galleta crujiente con chispas de chocolate y nueces",
   },
   {
     id: "3",
-    name: "Dragon Latte",
+    nameES: "Dragon Latte",
+    nameJP: "ドラゴンラテ",
     price: 95.0,
     rating: 2,
-    category: "coffees",
+    category: "coffee",
     image: "https://picsum.photos/seed/latte1/400/400",
     description: "Latte con arte de dragón y especias orientales",
   },
   {
     id: "4",
-    name: "Cosplay Croissant",
+    nameES: "Cosplay Croissant",
+    nameJP: "コスプレクロワッサン",
     price: 55.0,
     rating: 3,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/croissant1/400/400",
     description: "Croissant hojaldrado con forma de estrella",
   },
   {
     id: "5",
-    name: "Neko Cupcake",
+    nameES: "Neko Cupcake",
+    nameJP: "ねこカップケーキ",
     price: 68.0,
     rating: 4,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/cupcake1/400/400",
     description: "Cupcake con ears de gato y cola de malvavisco",
   },
   {
     id: "6",
-    name: "Potion Matcha",
+    nameES: "Potion Matcha",
+    nameJP: "ポーションマチャ",
     price: 78.0,
     rating: 5,
-    category: "drinks",
+    category: "drink",
     image: "https://picsum.photos/seed/matcha1/400/400",
     description: "Matcha premium estilo hechicero con diseño de póción",
   },
   {
     id: "7",
-    name: "Mecha Brownie",
+    nameES: "Mecha Brownie",
+    nameJP: "メカブラウニー",
     price: 75.0,
     rating: 4.8,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/brownie1/400/400",
     description: "Brownie de chocolate con decoración futurista",
   },
   {
     id: "8",
-    name: "Akuma Cookie",
+    nameES: "Akuma Cookie",
+    nameJP: "悪魔クッキー",
     price: 35.0,
     rating: 4.1,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/cookie2/400/400",
     description: "Galleta con diseño demoníaco y toque de canela",
   },
   {
     id: "9",
-    name: "Sailor Moon Croissant",
+    nameES: "Sailor Moon Croissant",
+    nameJP: "セーラームーンクロワッサン",
     price: 65.0,
     rating: 4.7,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/croissant2/400/400",
     description: "Croissant mágico con glaseado celestial",
   },
   {
     id: "10",
-    name: "Spirit Tea",
+    nameES: "Spirit Tea",
+    nameJP: "スピリットティー",
     price: 58.0,
     rating: 4.3,
-    category: "drinks",
+    category: "drink",
     image: "https://picsum.photos/seed/tea1/400/400",
     description: "Té espiritual con burbujas místicas",
   },
   {
     id: "11",
-    name: "Pixel Cupcake",
+    nameES: "Pixel Cupcake",
+    nameJP: "ピクセルカップケーキ",
     price: 72.0,
     rating: 4.5,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/cupcake2/400/400",
     description: "Cupcake pixelado estilo retro gamer",
   },
   {
     id: "12",
-    name: "Phoenix Cake",
+    nameES: "Phoenix Cake",
+    nameJP: "フェニックスケーキ",
     price: 320.0,
     rating: 5.0,
-    category: "sweets",
+    category: "sweet",
     image: "https://picsum.photos/seed/cake2/400/400",
     description: "Pastel de celebración con diseño de fénix",
   },
