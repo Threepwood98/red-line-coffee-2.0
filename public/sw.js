@@ -4,7 +4,7 @@
 // de esto: const CACHE_NAME = "example-v1";
 // a esto: const CACHE_NAME = "example-v2"; ← activate event borra el v1 automáticamente
 
-const CACHE_NAME = "redline-v2";
+const CACHE_NAME = "redline-v2.1";
 const SHELL_URLS = ["/", "/store", "/ps4", "/pokedex", "/more"];
 
 self.addEventListener("install", (event) => {
@@ -40,10 +40,10 @@ self.addEventListener("fetch", (event) => {
         (cached) =>
           cached ??
           fetch(event.request).then((res) => {
-            if (res.ok)
-              caches
-                .open(CACHE_NAME)
-                .then((c) => c.put(event.request, res.clone()));
+            if (res.ok) {
+              const resClone = res.clone();
+              caches.open(CACHE_NAME).then((c) => c.put(event.request, resClone));
+            }
             return res;
           }),
       ),
@@ -56,9 +56,8 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((res) => {
-          caches
-            .open(CACHE_NAME)
-            .then((c) => c.put(event.request, res.clone()));
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(event.request, resClone));
           return res;
         })
         .catch(() =>

@@ -16,10 +16,10 @@ interface CategoryIconProps {
 
 const categoryIcons: Record<Category | "all", LucideIcon> = {
   all: LayoutGridIcon,
-  Coffee: CoffeeIcon,
-  Drink: CupSodaIcon,
-  Food: SoupIcon,
-  Sweet: CakeSliceIcon,
+  coffee: CoffeeIcon,
+  drink: CupSodaIcon,
+  food: SoupIcon,
+  sweet: CakeSliceIcon,
 };
 
 export function CategoryIcon({ category, className }: CategoryIconProps) {
