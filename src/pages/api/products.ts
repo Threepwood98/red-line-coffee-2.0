@@ -36,7 +36,7 @@ export const GET: APIRoute = async () => {
       nameJP: name.ja_JP || Object.values(name)[0] || "商品",
       price: Number(product.list_price) || 0,
       rating: 0,
-      category: (category?.es_ES?.toLowerCase() as Category) || "general",
+      category: (category?.es_ES?.toLowerCase() as Category) || "food",
       image: "https://picsum.photos/seed/" + product.id + "/400/400",
       description: description?.es_ES
         ? description.es_ES || Object.values(description)[0] || ""
