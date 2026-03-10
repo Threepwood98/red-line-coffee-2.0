@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { CategoryIcon } from "@/components/CategoryIcon";
-import { ProductTCG } from "@/components/ProductTCG";
+import ProductTCG from "./ProductTCG";
 import { cn } from "@/lib/utils";
 import { categories, type Category, type Product } from "@/types";
 import HeroCarousel from "./HeroCarousel";
@@ -65,7 +65,7 @@ export function MenuPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-8 pt-4">
+    <div className="flex flex-col gap-4 sm:gap-8 pt-4 pb-16">
       <HeroCarousel />
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-xs shadow-sm">
         <div className="flex flex-col">

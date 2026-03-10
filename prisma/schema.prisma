@@ -46,3 +46,19 @@ model product_product {
 
   @@map("product_product")
 }
+
+model ir_attachment {
+  id          Int      @id @default(autoincrement())
+  res_id      Int?
+  file_size   Int?
+  name        String   @db.VarChar
+  res_model   String?  @db.VarChar
+  res_field   String?  @db.VarChar
+  type        String   @db.VarChar
+  store_fname String?  @db.VarChar
+  mimetype    String?  @db.VarChar
+  public      Boolean?
+  db_datas    Bytes?
+
+  @@map("ir_attachment")
+}

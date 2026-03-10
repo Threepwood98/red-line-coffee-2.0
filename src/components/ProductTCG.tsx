@@ -17,7 +17,7 @@ function getRarityFromRating(rating: number): Rarity {
   return "legendary";
 }
 
-export function ProductTCG({ product, className }: ProductTCGProps) {
+export default function ProductTCG({ product, className }: ProductTCGProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -150,7 +150,7 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
         <div className="flex flex-col items-center gap-2 sm:gap-3">
           <div className="relative aspect-square rounded-xl w-full overflow-hidden">
             <img
-              src={product.image}
+              src={`/api/products/${product.id}/image`}
               alt={product.nameES}
               className="object-cover w-full h-full"
             />
@@ -172,5 +172,3 @@ export function ProductTCG({ product, className }: ProductTCGProps) {
     </div>
   );
 }
-
-export default ProductTCG;
