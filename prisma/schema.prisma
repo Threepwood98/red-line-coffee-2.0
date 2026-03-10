@@ -8,34 +8,41 @@ datasource db {
   provider = "postgresql"
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
-model product_template {
-  id                       Int               @id @default(autoincrement())
-  categ_id                 Int?
-  type                     String            @db.VarChar
-  name                     Json
-  description              Json?
-  description_purchase     Json?
-  description_sale         Json?
-  list_price               Decimal?          @db.Decimal
-  sale_ok                  Boolean?
-  purchase_ok              Boolean?
-  active                   Boolean?
-  can_image_1024_be_zoomed Boolean?
-  public_description       Json?
-  productProducts          product_product[]
+model product_category {
+  id               Int                @id @default(autoincrement())
+  parent_id        Int?
+  name             String             @db.VarChar
+  complete_name    String?            @db.VarChar
+  parent_path      String?
+  product_template product_template[]
+
+  @@map("product_category")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
-model product_product {
-  id                               Int      @id @default(autoincrement())
-  product_tmpl_id                  Int
-  default_code                     String?  @db.VarChar
-  standard_price                   Json?
-  active                           Boolean?
-  can_image_variant_1024_be_zoomed Boolean?
+model product_template {
+  id               Int               @id @default(autoincrement())
+  categ_id         Int?
+  type             String            @db.VarChar
+  name             Json
+  description      Json?
+  description_sale Json?
+  list_price       Decimal?          @db.Decimal
+  sale_ok          Boolean?
+  purchase_ok      Boolean?
+  active           Boolean?
+  productProducts  product_product[]
+  product_category product_category? @relation(fields: [categ_id], references: [id])
 
+  @@map("product_template")
+}
+
+model product_product {
+  id               Int              @id @default(autoincrement())
+  product_tmpl_id  Int
+  default_code     String?          @db.VarChar
+  barcode          String?          @db.VarChar
+  active           Boolean?
   product_template product_template @relation(fields: [product_tmpl_id], references: [id])
+
+  @@map("product_product")
 }
