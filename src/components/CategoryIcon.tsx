@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import type { Category } from "@/types";
 import {
   CakeSliceIcon,
   CoffeeIcon,
@@ -8,8 +9,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-type Category = "coffee" | "drink" | "food" | "sweet";
-
 interface CategoryIconProps {
   category: Category | "all";
   className?: string;
@@ -17,10 +16,10 @@ interface CategoryIconProps {
 
 const categoryIcons: Record<Category | "all", LucideIcon> = {
   all: LayoutGridIcon,
-  coffee: CoffeeIcon,
-  drink: CupSodaIcon,
-  food: SoupIcon,
-  sweet: CakeSliceIcon,
+  Coffee: CoffeeIcon,
+  Drink: CupSodaIcon,
+  Food: SoupIcon,
+  Sweet: CakeSliceIcon,
 };
 
 export function CategoryIcon({ category, className }: CategoryIconProps) {

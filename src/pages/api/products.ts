@@ -3,7 +3,6 @@ import { prisma } from "../../lib/prisma";
 import type { Category } from "@/types";
 
 type Language = "en_US" | "es_ES" | "ja_JP";
-// type Category = "coffee" | "drink" | "food" | "sweet";
 
 export const GET: APIRoute = async () => {
   const products = await prisma.product_template.findMany({
