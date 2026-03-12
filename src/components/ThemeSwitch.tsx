@@ -1,5 +1,10 @@
+import { cn } from "@/lib/utils";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+
+interface ThemeSwitchProps {
+  className?: string;
+}
 
 type Theme = "light" | "dark";
 
@@ -13,7 +18,7 @@ function getInitialTheme(): Theme {
   );
 }
 
-export function ThemeSwitch() {
+export function ThemeSwitch({ className }: ThemeSwitchProps) {
   const [theme, setThemeState] = useState<Theme>("light");
   const [isMounted, setIsMounted] = useState(false);
 
@@ -32,7 +37,10 @@ export function ThemeSwitch() {
 
   return (
     <button
-      className="flex aspect-square items-center justify-center text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-primary transition-colors cursor-pointer"
+      className={cn(
+        "flex aspect-square items-center justify-center text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-primary transition-colors cursor-pointer",
+        className,
+      )}
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
       {!isMounted || isDark ? <SunIcon /> : <MoonIcon />}

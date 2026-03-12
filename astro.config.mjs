@@ -15,5 +15,6 @@ export default defineConfig({
     resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
   },
   integrations: [react()],
+  output: "server",
   adapter: node({ mode: "standalone" }),
 });

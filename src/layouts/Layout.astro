@@ -1,6 +1,7 @@
 ---
-import FooterBar from "@/components/FooterBar.astro";
-import HeaderBar from "@/components/HeaderBar.astro";
+import "@fontsource/bebas-neue";
+import "@fontsource/rajdhani";
+import "@fontsource/rajdhani/700";
 ---
 
 <!doctype html>
@@ -20,12 +21,17 @@ import HeaderBar from "@/components/HeaderBar.astro";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <title>Red Line Coffee</title>
   </head>
   <body>
-    <HeaderBar />
     <slot />
-    <FooterBar />
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>
 

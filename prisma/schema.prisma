@@ -1,0 +1,64 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model product_category {
+  id               Int                @id @default(autoincrement())
+  parent_id        Int?
+  name             String             @db.VarChar
+  complete_name    String?            @db.VarChar
+  parent_path      String?
+  product_template product_template[]
+
+  @@map("product_category")
+}
+
+model product_template {
+  id               Int               @id @default(autoincrement())
+  categ_id         Int?
+  type             String            @db.VarChar
+  name             Json
+  description      Json?
+  description_sale Json?
+  list_price       Decimal?          @db.Decimal
+  sale_ok          Boolean?
+  purchase_ok      Boolean?
+  active           Boolean?
+  productProducts  product_product[]
+  product_category product_category? @relation(fields: [categ_id], references: [id])
+
+  @@map("product_template")
+}
+
+model product_product {
+  id               Int              @id @default(autoincrement())
+  product_tmpl_id  Int
+  default_code     String?          @db.VarChar
+  barcode          String?          @db.VarChar
+  active           Boolean?
+  product_template product_template @relation(fields: [product_tmpl_id], references: [id])
+
+  @@map("product_product")
+}
+
+model ir_attachment {
+  id          Int      @id @default(autoincrement())
+  res_id      Int?
+  file_size   Int?
+  name        String   @db.VarChar
+  res_model   String?  @db.VarChar
+  res_field   String?  @db.VarChar
+  type        String   @db.VarChar
+  store_fname String?  @db.VarChar
+  mimetype    String?  @db.VarChar
+  public      Boolean?
+  db_datas    Bytes?
+
+  @@map("ir_attachment")
+}
