@@ -138,7 +138,7 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
           !isNR ? rarityStyles[rarity].gradient : "py-1.5 sm:py-2.5",
         )}
       >
-        <CategoryIcon category={product.category} />
+        <CategoryIcon category={product.category.toLocaleLowerCase()} />
         <span className="flex gap-0.5 font-bebas-neue text-xl sm:text-xl">
           <StarIcon className={cn(!isNR && rarityStyles[rarity].star)} />
           {!isNR && product.rating.toFixed(1)}
@@ -157,10 +157,10 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
           </div>
           <div className="text-center uppercase">
             <span className="block font-bebas-neue text-xl sm:text-2xl text-accent-foreground">
-              {product.nameES}
+              {product.nameJP}
             </span>
             <span className="block font-rajdhani text-xs sm:text-sm text-accent-foreground italic">
-              {product.nameJP}
+              {product.nameES}
             </span>
           </div>
         </div>

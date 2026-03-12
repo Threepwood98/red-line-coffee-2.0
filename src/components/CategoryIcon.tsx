@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import type { Category } from "@/types";
 import {
   CakeSliceIcon,
   CoffeeIcon,
@@ -10,11 +9,11 @@ import {
 } from "lucide-react";
 
 interface CategoryIconProps {
-  category: Category | "all";
+  category: string;
   className?: string;
 }
 
-const categoryIcons: Record<Category | "all", LucideIcon> = {
+const categoryIcons: Record<string, LucideIcon> = {
   all: LayoutGridIcon,
   coffee: CoffeeIcon,
   drink: CupSodaIcon,
