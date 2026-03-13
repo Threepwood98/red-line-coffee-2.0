@@ -157,10 +157,10 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
           </div>
           <div className="text-center uppercase">
             <span className="block font-bebas-neue text-xl sm:text-2xl text-accent-foreground">
-              {product.nameES}
+              {product.nameJP}
             </span>
             <span className="block font-rajdhani text-xs sm:text-sm text-accent-foreground italic">
-              {product.nameJP}
+              {product.nameES}
             </span>
           </div>
         </div>
