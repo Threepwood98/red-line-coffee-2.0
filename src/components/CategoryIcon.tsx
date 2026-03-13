@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import type { Category } from "@/types";
 import {
   CakeSliceIcon,
   CoffeeIcon,
@@ -9,7 +10,7 @@ import {
 } from "lucide-react";
 
 interface CategoryIconProps {
-  category: string;
+  category: Category | "all";
   className?: string;
 }
 

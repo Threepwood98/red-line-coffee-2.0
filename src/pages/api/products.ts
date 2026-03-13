@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro";
 import { prisma } from "../../lib/prisma";
-import type { Category } from "@/types";
 
 type Language = "en_US" | "es_ES" | "ja_JP";
 
@@ -30,10 +29,7 @@ export const GET: APIRoute = async () => {
       Language,
       string
     > | null;
-    const category = product.product_category?.name as unknown as Record<
-      Language,
-      string
-    > | null;
+    const category = product.product_category?.name.toLowerCase() || "alll";
 
     return {
       id: product.id.toString(),
@@ -41,7 +37,7 @@ export const GET: APIRoute = async () => {
       nameJP: name.ja_JP || Object.values(name)[0] || "商品",
       price: Number(product.list_price) || 0,
       rating: 0,
-      category: (category?.es_ES?.toLowerCase() as Category) || "food",
+      category,
       description: description?.es_ES
         ? description.es_ES || Object.values(description)[0] || ""
         : "",

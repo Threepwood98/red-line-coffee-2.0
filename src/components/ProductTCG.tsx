@@ -138,7 +138,7 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
           !isNR ? rarityStyles[rarity].gradient : "py-1.5 sm:py-2.5",
         )}
       >
-        <CategoryIcon category={product.category.toLocaleLowerCase()} />
+        <CategoryIcon category={product.category} />
         <span className="flex gap-0.5 font-bebas-neue text-xl sm:text-xl">
           <StarIcon className={cn(!isNR && rarityStyles[rarity].star)} />
           {!isNR && product.rating.toFixed(1)}
