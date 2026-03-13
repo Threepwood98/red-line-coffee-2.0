@@ -1179,11 +1179,6 @@ export type ir_attachmentFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` ir_attachments.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of ir_attachments.
-   */
   distinct?: Prisma.Ir_attachmentScalarFieldEnum | Prisma.Ir_attachmentScalarFieldEnum[]
 }
 
