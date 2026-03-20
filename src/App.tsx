@@ -27,7 +27,7 @@ export default function App() {
       <header className="flex w-full h-16 px-4 sm:px-8 rounded-b-2xl items-center justify-between bg-primary-foreground">
         <div className="border-2 border-primary size-12 rounded-full overflow-hidden">
           <img
-            src="/favicon.ico"
+            src="/LOGO_CIRCULAR.webp"
             alt="logo"
             width={48}
             height={48}
