@@ -21,6 +21,7 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [imageError, setImageError] = useState(false);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -150,9 +151,10 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
         <div className="flex flex-col items-center gap-2 sm:gap-3">
           <div className="relative aspect-square rounded-xl w-full overflow-hidden">
             <img
-              src={`/api/products/${product.id}/image`}
+              src={imageError ? "/No_Image_Available.webp" : `/api/products/${product.id}/image`}
               alt={product.nameES}
               className="object-cover w-full h-full"
+              onError={() => setImageError(true)}
             />
           </div>
           <div className="text-center uppercase">
