@@ -7,6 +7,10 @@ interface GameCardProps {
   className?: string;
 }
 
+function optimizeImage(src: string, width: number) {
+  return `/_image?href=${encodeURIComponent(src)}&w=${width}&f=webp&q=75`;
+}
+
 export default function GameCard({ game, className }: GameCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -87,7 +91,11 @@ export default function GameCard({ game, className }: GameCardProps) {
         <div className="flex flex-col items-center gap-2 sm:gap-3">
           <div className="relative rounded-xl overflow-hidden">
             <img
-              src={imageError ? "/No_Image_Available.webp" : imgSrc}
+              src={
+                imageError
+                  ? "/No_Image_Available.webp"
+                  : optimizeImage(imgSrc, 256)
+              }
               alt={game.name_original}
               loading="lazy"
               onError={() => setImageError(true)}
