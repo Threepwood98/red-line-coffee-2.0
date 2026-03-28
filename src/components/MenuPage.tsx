@@ -3,7 +3,6 @@ import { CategoryIcon } from "@/components/CategoryIcon";
 import ProductTCG from "./ProductTCG";
 import { cn } from "@/lib/utils";
 import { categories, type Category, type Product } from "@/types";
-import HeroCarousel from "./HeroCarousel";
 
 const allCategories = [
   { id: "0", name: "Todo", value: "all" as Category | "all" },
@@ -45,7 +44,7 @@ export function MenuPage() {
   if (loading) {
     return (
       <div className="flex flex-col gap-4 sm:gap-8 pt-4">
-        <HeroCarousel />
+        {/* <HeroCarousel /> */}
         <div className="container mx-auto px-4 py-6 text-center">
           <p className="text-lg">Cargando productos...</p>
         </div>
@@ -56,7 +55,7 @@ export function MenuPage() {
   if (error) {
     return (
       <div className="flex flex-col gap-4 sm:gap-8 pt-4">
-        <HeroCarousel />
+        {/* <HeroCarousel /> */}
         <div className="container mx-auto px-4 py-6 text-center">
           <p className="text-lg text-red-500">Error: {error}</p>
         </div>
@@ -66,7 +65,7 @@ export function MenuPage() {
 
   return (
     <div className="flex flex-col gap-4 sm:gap-8 pt-4 pb-16">
-      <HeroCarousel />
+      {/* <HeroCarousel /> */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-xs shadow-sm">
         <div className="flex flex-col">
           <h1 className="font-bebas-neue text-4xl">Menú</h1>

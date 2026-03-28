@@ -14,7 +14,7 @@ interface CategoryIconProps {
   className?: string;
 }
 
-const categoryIcons: Record<Category | "all", LucideIcon> = {
+const categoryIcons: Record<string, LucideIcon> = {
   all: LayoutGridIcon,
   coffee: CoffeeIcon,
   drink: CupSodaIcon,
