@@ -15,6 +15,7 @@ export const GAME_IDS = [
   "naruto-x-boruto-ultimate-ninja-storm-connections",
   "mortal-kombat-11",
   "soulcalibur-vi",
+  "ea-sports-fc-25",
 ] as const;
 
 export interface Game {

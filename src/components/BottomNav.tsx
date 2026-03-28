@@ -24,7 +24,7 @@ export default function BottomNav() {
   return (
     <div className="fixed w-full px-6 h-20 bottom-0 z-10 bg-linear-to-t from-black/75 to-transparent">
       <nav
-        className="flex w-full p-1 items-center justify-around rounded-full bg-secondary"
+        className="flex w-full p-1 items-center justify-around rounded-full bg-primary-foreground"
         role="navigation"
       >
         {NAV_ITEMS.map((item, i) => {
@@ -35,7 +35,7 @@ export default function BottomNav() {
               className={cn(
                 "flex flex-col w-full py-0.5 items-center justify-center cursor-pointer transition-colors rounded-full text-primary",
                 isActive
-                  ? "bg-primary/75 text-primary-foreground"
+                  ? "bg-accent-foreground/75 text-primary-foreground"
                   : "hover:bg-primary/25",
               )}
               onClick={() => navigate(item.path)}
