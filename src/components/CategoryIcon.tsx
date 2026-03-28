@@ -6,11 +6,12 @@ import {
   CupSodaIcon,
   LayoutGridIcon,
   SoupIcon,
+  Gamepad2,
   type LucideIcon,
 } from "lucide-react";
 
 interface CategoryIconProps {
-  category: Category | "all";
+  category: Category | "all" | "games";
   className?: string;
 }
 
@@ -20,6 +21,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   drink: CupSodaIcon,
   food: SoupIcon,
   sweet: CakeSliceIcon,
+  games: Gamepad2,
 };
 
 export function CategoryIcon({ category, className }: CategoryIconProps) {

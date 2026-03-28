@@ -3,6 +3,8 @@ import { Route, Router, Switch } from "wouter";
 import { ThemeSwitch } from "./components/ThemeSwitch";
 
 const MenuPage = lazy(() => import("@/components/MenuPage"));
+const CatalogPage = lazy(() => import("@/components/CatalogPage"));
+
 // const Pokedex = lazy(() => import("@/components/Pokedex"));
 // const MorePage = lazy(() => import("@/components/MorePage"));
 
@@ -47,6 +49,7 @@ export default function App() {
         >
           <Switch>
             <Route path="/" component={MenuPage} />
+            <Route path="/catalog" component={CatalogPage} />
             {/* <Route path="/menu" component={MenuPage} /> */}
             {/* <Route path="/store">
               {() => <PlaceholderPage title="Tienda" />}
