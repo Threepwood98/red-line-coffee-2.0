@@ -17,5 +17,4 @@ export default defineConfig({
   integrations: [react()],
   output: "server",
   adapter: node({ mode: "standalone" }),
-  image: { domains: ["cdn2.steamgriddb.com"] },
 });

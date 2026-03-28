@@ -7,8 +7,8 @@ interface GameCardProps {
   className?: string;
 }
 
-function optimizeImage(src: string, width: number) {
-  return `/_image?href=${encodeURIComponent(src)}&w=${width}&f=webp&q=75`;
+function wsrvOptimize(src: string, width: number, quality = 60) {
+  return `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=${width}&output=webp&q=${quality}`;
 }
 
 export default function GameCard({ game, className }: GameCardProps) {
@@ -94,10 +94,10 @@ export default function GameCard({ game, className }: GameCardProps) {
               src={
                 imageError
                   ? "/No_Image_Available.webp"
-                  : optimizeImage(imgSrc, 256)
+                  : wsrvOptimize(imgSrc, 256, 75)
               }
               alt={game.name_original}
-              loading="lazy"
+              // loading="lazy"
               onError={() => setImageError(true)}
             />
           </div>
