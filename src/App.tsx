@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Router, Switch } from "wouter";
 import { ThemeSwitch } from "./components/ThemeSwitch";
+import BottomNav from "./components/BottomNav";
 
 const MenuPage = lazy(() => import("@/components/MenuPage"));
 const CatalogPage = lazy(() => import("@/components/CatalogPage"));
@@ -74,7 +75,7 @@ export default function App() {
           </Switch>
         </Suspense>
       </main>
-      {/* <BottomNav /> */}
+      <BottomNav />
     </Router>
   );
 }
