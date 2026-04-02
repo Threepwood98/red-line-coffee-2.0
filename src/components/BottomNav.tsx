@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { path: "/", label: "Menú", Icon: CoffeeIcon },
-  // { path: "/store", label: "Tienda", Icon: StoreIcon },
+  { path: "/store", label: "Tienda", Icon: StoreIcon },
   { path: "/catalog", label: "PS4", Icon: Gamepad2Icon },
-  // { path: "/more", label: "Más", Icon: EllipsisIcon },
+  { path: "/more", label: "Más", Icon: EllipsisIcon },
 ];
 
 export default function BottomNav() {
@@ -22,9 +22,9 @@ export default function BottomNav() {
   );
 
   return (
-    <div className="fixed w-full px-6 h-20 bottom-0 z-10 bg-linear-to-t from-black/75 to-transparent">
+    <div className="fixed w-full h-18 px-6 bottom-0 z-10 bg-linear-to-t from-black/75 to-transparent">
       <nav
-        className="flex w-full p-1 items-center justify-around rounded-full bg-primary-foreground"
+        className="flex w-full h-14 p-1 items-center justify-around rounded-full bg-primary-foreground"
         role="navigation"
       >
         {NAV_ITEMS.map((item, i) => {
@@ -33,10 +33,10 @@ export default function BottomNav() {
             <button
               key={item.path}
               className={cn(
-                "flex flex-col w-full py-0.5 items-center justify-center cursor-pointer transition-colors rounded-full text-primary",
+                "flex flex-col w-full h-full py-0.5 items-center justify-center cursor-pointer transition-colors rounded-full text-primary",
                 isActive
-                  ? "bg-accent-foreground/75 text-primary-foreground"
-                  : "hover:bg-primary/25",
+                  ? "bg-destructive/25 text-destructive"
+                  : "hover:bg-destructive/10",
               )}
               onClick={() => navigate(item.path)}
             >

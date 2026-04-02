@@ -29,7 +29,7 @@ export const GET: APIRoute = async () => {
       Language,
       string
     > | null;
-    const category = product.product_category?.name.toLowerCase() || "alll";
+    const category = product.product_category?.name.toLowerCase() || "all";
 
     return {
       id: product.id.toString(),

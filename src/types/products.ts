@@ -11,6 +11,13 @@ export interface Product {
   description: string;
 }
 
+export interface Merch {
+  id: string;
+  nameES: string;
+  price: number;
+  image: string;
+}
+
 export interface CategoryItem {
   id: string;
   name: string;

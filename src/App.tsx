@@ -5,18 +5,19 @@ import BottomNav from "./components/BottomNav";
 
 const MenuPage = lazy(() => import("@/components/MenuPage"));
 const CatalogPage = lazy(() => import("@/components/CatalogPage"));
+const StorePage = lazy(() => import("@/components/StorePage"));
 
 // const Pokedex = lazy(() => import("@/components/Pokedex"));
 // const MorePage = lazy(() => import("@/components/MorePage"));
 
-// function PlaceholderPage({ title }: { title: string }) {
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-//       <h1 className="text-4xl ">{title}</h1>
-//       <p className="text-muted-foreground">Página en construcción</p>
-//     </div>
-//   );
-// }
+function PlaceholderPage({ title }: { title: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+      <h1 className="text-4xl ">{title}</h1>
+      <p className="text-muted-foreground">Página en construcción</p>
+    </div>
+  );
+}
 
 export default function App() {
   // const [pokemonList, setPokemonList] = useState<FullPokemon[]>([]);
@@ -50,16 +51,18 @@ export default function App() {
         >
           <Switch>
             <Route path="/" component={MenuPage} />
+            <Route path="/store" component={StorePage} />
             <Route path="/catalog" component={CatalogPage} />
-            {/* <Route path="/menu" component={MenuPage} /> */}
+            <Route path="/more">
+              {() => <PlaceholderPage title="Más Opciones" />}
+            </Route>
             {/* <Route path="/store">
               {() => <PlaceholderPage title="Tienda" />}
             </Route>
-            <Route path="/ps4">{() => <PlaceholderPage title="PS4" />}</Route>
             <Route path="/pokedex">
               {() => <Pokedex pokemonList={pokemonList} />}
             </Route>
-            <Route path="/more" component={MorePage} /> */}
+             */}
             {/* <Route>
               {() => <PlaceholderPage title="404 - No encontrado" />}
             </Route> */}
