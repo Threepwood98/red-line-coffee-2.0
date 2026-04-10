@@ -254,6 +254,7 @@ export type product_templateWhereInput = {
   active?: Prisma.BoolNullableFilter<"product_template"> | boolean | null
   productProducts?: Prisma.Product_productListRelationFilter
   product_category?: Prisma.XOR<Prisma.Product_categoryNullableScalarRelationFilter, Prisma.product_categoryWhereInput> | null
+  mrpBoms?: Prisma.Mrp_bomListRelationFilter
 }
 
 export type product_templateOrderByWithRelationInput = {
@@ -269,6 +270,7 @@ export type product_templateOrderByWithRelationInput = {
   active?: Prisma.SortOrderInput | Prisma.SortOrder
   productProducts?: Prisma.product_productOrderByRelationAggregateInput
   product_category?: Prisma.product_categoryOrderByWithRelationInput
+  mrpBoms?: Prisma.mrp_bomOrderByRelationAggregateInput
 }
 
 export type product_templateWhereUniqueInput = Prisma.AtLeast<{
@@ -287,6 +289,7 @@ export type product_templateWhereUniqueInput = Prisma.AtLeast<{
   active?: Prisma.BoolNullableFilter<"product_template"> | boolean | null
   productProducts?: Prisma.Product_productListRelationFilter
   product_category?: Prisma.XOR<Prisma.Product_categoryNullableScalarRelationFilter, Prisma.product_categoryWhereInput> | null
+  mrpBoms?: Prisma.Mrp_bomListRelationFilter
 }, "id">
 
 export type product_templateOrderByWithAggregationInput = {
@@ -334,6 +337,7 @@ export type product_templateCreateInput = {
   active?: boolean | null
   productProducts?: Prisma.product_productCreateNestedManyWithoutProduct_templateInput
   product_category?: Prisma.product_categoryCreateNestedOneWithoutProduct_templateInput
+  mrpBoms?: Prisma.mrp_bomCreateNestedManyWithoutProduct_templateInput
 }
 
 export type product_templateUncheckedCreateInput = {
@@ -348,6 +352,7 @@ export type product_templateUncheckedCreateInput = {
   purchase_ok?: boolean | null
   active?: boolean | null
   productProducts?: Prisma.product_productUncheckedCreateNestedManyWithoutProduct_templateInput
+  mrpBoms?: Prisma.mrp_bomUncheckedCreateNestedManyWithoutProduct_templateInput
 }
 
 export type product_templateUpdateInput = {
@@ -361,6 +366,7 @@ export type product_templateUpdateInput = {
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   productProducts?: Prisma.product_productUpdateManyWithoutProduct_templateNestedInput
   product_category?: Prisma.product_categoryUpdateOneWithoutProduct_templateNestedInput
+  mrpBoms?: Prisma.mrp_bomUpdateManyWithoutProduct_templateNestedInput
 }
 
 export type product_templateUncheckedUpdateInput = {
@@ -375,6 +381,7 @@ export type product_templateUncheckedUpdateInput = {
   purchase_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   productProducts?: Prisma.product_productUncheckedUpdateManyWithoutProduct_templateNestedInput
+  mrpBoms?: Prisma.mrp_bomUncheckedUpdateManyWithoutProduct_templateNestedInput
 }
 
 export type product_templateCreateManyInput = {
@@ -474,6 +481,11 @@ export type Product_templateScalarRelationFilter = {
   isNot?: Prisma.product_templateWhereInput
 }
 
+export type Product_templateNullableScalarRelationFilter = {
+  is?: Prisma.product_templateWhereInput | null
+  isNot?: Prisma.product_templateWhereInput | null
+}
+
 export type product_templateCreateNestedManyWithoutProduct_categoryInput = {
   create?: Prisma.XOR<Prisma.product_templateCreateWithoutProduct_categoryInput, Prisma.product_templateUncheckedCreateWithoutProduct_categoryInput> | Prisma.product_templateCreateWithoutProduct_categoryInput[] | Prisma.product_templateUncheckedCreateWithoutProduct_categoryInput[]
   connectOrCreate?: Prisma.product_templateCreateOrConnectWithoutProduct_categoryInput | Prisma.product_templateCreateOrConnectWithoutProduct_categoryInput[]
@@ -542,6 +554,22 @@ export type product_templateUpdateOneRequiredWithoutProductProductsNestedInput =
   update?: Prisma.XOR<Prisma.XOR<Prisma.product_templateUpdateToOneWithWhereWithoutProductProductsInput, Prisma.product_templateUpdateWithoutProductProductsInput>, Prisma.product_templateUncheckedUpdateWithoutProductProductsInput>
 }
 
+export type product_templateCreateNestedOneWithoutMrpBomsInput = {
+  create?: Prisma.XOR<Prisma.product_templateCreateWithoutMrpBomsInput, Prisma.product_templateUncheckedCreateWithoutMrpBomsInput>
+  connectOrCreate?: Prisma.product_templateCreateOrConnectWithoutMrpBomsInput
+  connect?: Prisma.product_templateWhereUniqueInput
+}
+
+export type product_templateUpdateOneWithoutMrpBomsNestedInput = {
+  create?: Prisma.XOR<Prisma.product_templateCreateWithoutMrpBomsInput, Prisma.product_templateUncheckedCreateWithoutMrpBomsInput>
+  connectOrCreate?: Prisma.product_templateCreateOrConnectWithoutMrpBomsInput
+  upsert?: Prisma.product_templateUpsertWithoutMrpBomsInput
+  disconnect?: Prisma.product_templateWhereInput | boolean
+  delete?: Prisma.product_templateWhereInput | boolean
+  connect?: Prisma.product_templateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.product_templateUpdateToOneWithWhereWithoutMrpBomsInput, Prisma.product_templateUpdateWithoutMrpBomsInput>, Prisma.product_templateUncheckedUpdateWithoutMrpBomsInput>
+}
+
 export type product_templateCreateWithoutProduct_categoryInput = {
   type: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -552,6 +580,7 @@ export type product_templateCreateWithoutProduct_categoryInput = {
   purchase_ok?: boolean | null
   active?: boolean | null
   productProducts?: Prisma.product_productCreateNestedManyWithoutProduct_templateInput
+  mrpBoms?: Prisma.mrp_bomCreateNestedManyWithoutProduct_templateInput
 }
 
 export type product_templateUncheckedCreateWithoutProduct_categoryInput = {
@@ -565,6 +594,7 @@ export type product_templateUncheckedCreateWithoutProduct_categoryInput = {
   purchase_ok?: boolean | null
   active?: boolean | null
   productProducts?: Prisma.product_productUncheckedCreateNestedManyWithoutProduct_templateInput
+  mrpBoms?: Prisma.mrp_bomUncheckedCreateNestedManyWithoutProduct_templateInput
 }
 
 export type product_templateCreateOrConnectWithoutProduct_categoryInput = {
@@ -619,6 +649,7 @@ export type product_templateCreateWithoutProductProductsInput = {
   purchase_ok?: boolean | null
   active?: boolean | null
   product_category?: Prisma.product_categoryCreateNestedOneWithoutProduct_templateInput
+  mrpBoms?: Prisma.mrp_bomCreateNestedManyWithoutProduct_templateInput
 }
 
 export type product_templateUncheckedCreateWithoutProductProductsInput = {
@@ -632,6 +663,7 @@ export type product_templateUncheckedCreateWithoutProductProductsInput = {
   sale_ok?: boolean | null
   purchase_ok?: boolean | null
   active?: boolean | null
+  mrpBoms?: Prisma.mrp_bomUncheckedCreateNestedManyWithoutProduct_templateInput
 }
 
 export type product_templateCreateOrConnectWithoutProductProductsInput = {
@@ -660,6 +692,7 @@ export type product_templateUpdateWithoutProductProductsInput = {
   purchase_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   product_category?: Prisma.product_categoryUpdateOneWithoutProduct_templateNestedInput
+  mrpBoms?: Prisma.mrp_bomUpdateManyWithoutProduct_templateNestedInput
 }
 
 export type product_templateUncheckedUpdateWithoutProductProductsInput = {
@@ -673,6 +706,77 @@ export type product_templateUncheckedUpdateWithoutProductProductsInput = {
   sale_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   purchase_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  mrpBoms?: Prisma.mrp_bomUncheckedUpdateManyWithoutProduct_templateNestedInput
+}
+
+export type product_templateCreateWithoutMrpBomsInput = {
+  type: string
+  name: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description_sale?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  list_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sale_ok?: boolean | null
+  purchase_ok?: boolean | null
+  active?: boolean | null
+  productProducts?: Prisma.product_productCreateNestedManyWithoutProduct_templateInput
+  product_category?: Prisma.product_categoryCreateNestedOneWithoutProduct_templateInput
+}
+
+export type product_templateUncheckedCreateWithoutMrpBomsInput = {
+  id?: number
+  categ_id?: number | null
+  type: string
+  name: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description_sale?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  list_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sale_ok?: boolean | null
+  purchase_ok?: boolean | null
+  active?: boolean | null
+  productProducts?: Prisma.product_productUncheckedCreateNestedManyWithoutProduct_templateInput
+}
+
+export type product_templateCreateOrConnectWithoutMrpBomsInput = {
+  where: Prisma.product_templateWhereUniqueInput
+  create: Prisma.XOR<Prisma.product_templateCreateWithoutMrpBomsInput, Prisma.product_templateUncheckedCreateWithoutMrpBomsInput>
+}
+
+export type product_templateUpsertWithoutMrpBomsInput = {
+  update: Prisma.XOR<Prisma.product_templateUpdateWithoutMrpBomsInput, Prisma.product_templateUncheckedUpdateWithoutMrpBomsInput>
+  create: Prisma.XOR<Prisma.product_templateCreateWithoutMrpBomsInput, Prisma.product_templateUncheckedCreateWithoutMrpBomsInput>
+  where?: Prisma.product_templateWhereInput
+}
+
+export type product_templateUpdateToOneWithWhereWithoutMrpBomsInput = {
+  where?: Prisma.product_templateWhereInput
+  data: Prisma.XOR<Prisma.product_templateUpdateWithoutMrpBomsInput, Prisma.product_templateUncheckedUpdateWithoutMrpBomsInput>
+}
+
+export type product_templateUpdateWithoutMrpBomsInput = {
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description_sale?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  list_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sale_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  purchase_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  productProducts?: Prisma.product_productUpdateManyWithoutProduct_templateNestedInput
+  product_category?: Prisma.product_categoryUpdateOneWithoutProduct_templateNestedInput
+}
+
+export type product_templateUncheckedUpdateWithoutMrpBomsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  categ_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description_sale?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  list_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sale_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  purchase_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  productProducts?: Prisma.product_productUncheckedUpdateManyWithoutProduct_templateNestedInput
 }
 
 export type product_templateCreateManyProduct_categoryInput = {
@@ -697,6 +801,7 @@ export type product_templateUpdateWithoutProduct_categoryInput = {
   purchase_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   productProducts?: Prisma.product_productUpdateManyWithoutProduct_templateNestedInput
+  mrpBoms?: Prisma.mrp_bomUpdateManyWithoutProduct_templateNestedInput
 }
 
 export type product_templateUncheckedUpdateWithoutProduct_categoryInput = {
@@ -710,6 +815,7 @@ export type product_templateUncheckedUpdateWithoutProduct_categoryInput = {
   purchase_ok?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   productProducts?: Prisma.product_productUncheckedUpdateManyWithoutProduct_templateNestedInput
+  mrpBoms?: Prisma.mrp_bomUncheckedUpdateManyWithoutProduct_templateNestedInput
 }
 
 export type product_templateUncheckedUpdateManyWithoutProduct_categoryInput = {
@@ -731,10 +837,12 @@ export type product_templateUncheckedUpdateManyWithoutProduct_categoryInput = {
 
 export type Product_templateCountOutputType = {
   productProducts: number
+  mrpBoms: number
 }
 
 export type Product_templateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   productProducts?: boolean | Product_templateCountOutputTypeCountProductProductsArgs
+  mrpBoms?: boolean | Product_templateCountOutputTypeCountMrpBomsArgs
 }
 
 /**
@@ -754,6 +862,13 @@ export type Product_templateCountOutputTypeCountProductProductsArgs<ExtArgs exte
   where?: Prisma.product_productWhereInput
 }
 
+/**
+ * Product_templateCountOutputType without action
+ */
+export type Product_templateCountOutputTypeCountMrpBomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.mrp_bomWhereInput
+}
+
 
 export type product_templateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -768,6 +883,7 @@ export type product_templateSelect<ExtArgs extends runtime.Types.Extensions.Inte
   active?: boolean
   productProducts?: boolean | Prisma.product_template$productProductsArgs<ExtArgs>
   product_category?: boolean | Prisma.product_template$product_categoryArgs<ExtArgs>
+  mrpBoms?: boolean | Prisma.product_template$mrpBomsArgs<ExtArgs>
   _count?: boolean | Prisma.Product_templateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["product_template"]>
 
@@ -816,6 +932,7 @@ export type product_templateOmit<ExtArgs extends runtime.Types.Extensions.Intern
 export type product_templateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   productProducts?: boolean | Prisma.product_template$productProductsArgs<ExtArgs>
   product_category?: boolean | Prisma.product_template$product_categoryArgs<ExtArgs>
+  mrpBoms?: boolean | Prisma.product_template$mrpBomsArgs<ExtArgs>
   _count?: boolean | Prisma.Product_templateCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type product_templateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -830,6 +947,7 @@ export type $product_templatePayload<ExtArgs extends runtime.Types.Extensions.In
   objects: {
     productProducts: Prisma.$product_productPayload<ExtArgs>[]
     product_category: Prisma.$product_categoryPayload<ExtArgs> | null
+    mrpBoms: Prisma.$mrp_bomPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1238,6 +1356,7 @@ export interface Prisma__product_templateClient<T, Null = never, ExtArgs extends
   readonly [Symbol.toStringTag]: "PrismaPromise"
   productProducts<T extends Prisma.product_template$productProductsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.product_template$productProductsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$product_productPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   product_category<T extends Prisma.product_template$product_categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.product_template$product_categoryArgs<ExtArgs>>): Prisma.Prisma__product_categoryClient<runtime.Types.Result.GetResult<Prisma.$product_categoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  mrpBoms<T extends Prisma.product_template$mrpBomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.product_template$mrpBomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$mrp_bomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1713,6 +1832,30 @@ export type product_template$product_categoryArgs<ExtArgs extends runtime.Types.
    */
   include?: Prisma.product_categoryInclude<ExtArgs> | null
   where?: Prisma.product_categoryWhereInput
+}
+
+/**
+ * product_template.mrpBoms
+ */
+export type product_template$mrpBomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the mrp_bom
+   */
+  select?: Prisma.mrp_bomSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the mrp_bom
+   */
+  omit?: Prisma.mrp_bomOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.mrp_bomInclude<ExtArgs> | null
+  where?: Prisma.mrp_bomWhereInput
+  orderBy?: Prisma.mrp_bomOrderByWithRelationInput | Prisma.mrp_bomOrderByWithRelationInput[]
+  cursor?: Prisma.mrp_bomWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Mrp_bomScalarFieldEnum | Prisma.Mrp_bomScalarFieldEnum[]
 }
 
 /**

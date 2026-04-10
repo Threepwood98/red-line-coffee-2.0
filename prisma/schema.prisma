@@ -32,6 +32,7 @@ model product_template {
   active           Boolean?
   productProducts  product_product[]
   product_category product_category? @relation(fields: [categ_id], references: [id])
+  mrpBoms          mrp_bom[]
 
   @@map("product_template")
 }
@@ -43,6 +44,7 @@ model product_product {
   barcode          String?          @db.VarChar
   active           Boolean?
   product_template product_template @relation(fields: [product_tmpl_id], references: [id])
+  mrpBomLines      mrp_bom_line[]
 
   @@map("product_product")
 }
@@ -61,4 +63,26 @@ model ir_attachment {
   db_datas    Bytes?
 
   @@map("ir_attachment")
+}
+
+model mrp_bom {
+  id              Int      @id @default(autoincrement())
+  product_tmpl_id Int?
+  product_id      Int?
+  product_qty     Decimal?
+  type            String?
+  active          Boolean?
+
+  product_template product_template? @relation(fields: [product_tmpl_id], references: [id])
+  bom_lines        mrp_bom_line[]
+}
+
+model mrp_bom_line {
+  id          Int      @id @default(autoincrement())
+  bom_id      Int?
+  product_id  Int?
+  product_qty Decimal?
+
+  bom             mrp_bom?         @relation(fields: [bom_id], references: [id])
+  product_product product_product? @relation(fields: [product_id], references: [id])
 }

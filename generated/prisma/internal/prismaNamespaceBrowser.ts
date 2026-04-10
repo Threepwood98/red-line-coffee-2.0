@@ -54,7 +54,9 @@ export const ModelName = {
   product_category: 'product_category',
   product_template: 'product_template',
   product_product: 'product_product',
-  ir_attachment: 'ir_attachment'
+  ir_attachment: 'ir_attachment',
+  mrp_bom: 'mrp_bom',
+  mrp_bom_line: 'mrp_bom_line'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -126,6 +128,28 @@ export const Ir_attachmentScalarFieldEnum = {
 } as const
 
 export type Ir_attachmentScalarFieldEnum = (typeof Ir_attachmentScalarFieldEnum)[keyof typeof Ir_attachmentScalarFieldEnum]
+
+
+export const Mrp_bomScalarFieldEnum = {
+  id: 'id',
+  product_tmpl_id: 'product_tmpl_id',
+  product_id: 'product_id',
+  product_qty: 'product_qty',
+  type: 'type',
+  active: 'active'
+} as const
+
+export type Mrp_bomScalarFieldEnum = (typeof Mrp_bomScalarFieldEnum)[keyof typeof Mrp_bomScalarFieldEnum]
+
+
+export const Mrp_bom_lineScalarFieldEnum = {
+  id: 'id',
+  bom_id: 'bom_id',
+  product_id: 'product_id',
+  product_qty: 'product_qty'
+} as const
+
+export type Mrp_bom_lineScalarFieldEnum = (typeof Mrp_bom_lineScalarFieldEnum)[keyof typeof Mrp_bom_lineScalarFieldEnum]
 
 
 export const SortOrder = {

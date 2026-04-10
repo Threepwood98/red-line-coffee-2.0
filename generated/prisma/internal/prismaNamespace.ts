@@ -387,7 +387,9 @@ export const ModelName = {
   product_category: 'product_category',
   product_template: 'product_template',
   product_product: 'product_product',
-  ir_attachment: 'ir_attachment'
+  ir_attachment: 'ir_attachment',
+  mrp_bom: 'mrp_bom',
+  mrp_bom_line: 'mrp_bom_line'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "product_category" | "product_template" | "product_product" | "ir_attachment"
+    modelProps: "product_category" | "product_template" | "product_product" | "ir_attachment" | "mrp_bom" | "mrp_bom_line"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +705,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    mrp_bom: {
+      payload: Prisma.$mrp_bomPayload<ExtArgs>
+      fields: Prisma.mrp_bomFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.mrp_bomFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.mrp_bomFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>
+        }
+        findFirst: {
+          args: Prisma.mrp_bomFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.mrp_bomFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>
+        }
+        findMany: {
+          args: Prisma.mrp_bomFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>[]
+        }
+        create: {
+          args: Prisma.mrp_bomCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>
+        }
+        createMany: {
+          args: Prisma.mrp_bomCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.mrp_bomCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>[]
+        }
+        delete: {
+          args: Prisma.mrp_bomDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>
+        }
+        update: {
+          args: Prisma.mrp_bomUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>
+        }
+        deleteMany: {
+          args: Prisma.mrp_bomDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.mrp_bomUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.mrp_bomUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>[]
+        }
+        upsert: {
+          args: Prisma.mrp_bomUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bomPayload>
+        }
+        aggregate: {
+          args: Prisma.Mrp_bomAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMrp_bom>
+        }
+        groupBy: {
+          args: Prisma.mrp_bomGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Mrp_bomGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.mrp_bomCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Mrp_bomCountAggregateOutputType> | number
+        }
+      }
+    }
+    mrp_bom_line: {
+      payload: Prisma.$mrp_bom_linePayload<ExtArgs>
+      fields: Prisma.mrp_bom_lineFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.mrp_bom_lineFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.mrp_bom_lineFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>
+        }
+        findFirst: {
+          args: Prisma.mrp_bom_lineFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.mrp_bom_lineFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>
+        }
+        findMany: {
+          args: Prisma.mrp_bom_lineFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>[]
+        }
+        create: {
+          args: Prisma.mrp_bom_lineCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>
+        }
+        createMany: {
+          args: Prisma.mrp_bom_lineCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.mrp_bom_lineCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>[]
+        }
+        delete: {
+          args: Prisma.mrp_bom_lineDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>
+        }
+        update: {
+          args: Prisma.mrp_bom_lineUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>
+        }
+        deleteMany: {
+          args: Prisma.mrp_bom_lineDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.mrp_bom_lineUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.mrp_bom_lineUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>[]
+        }
+        upsert: {
+          args: Prisma.mrp_bom_lineUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$mrp_bom_linePayload>
+        }
+        aggregate: {
+          args: Prisma.Mrp_bom_lineAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMrp_bom_line>
+        }
+        groupBy: {
+          args: Prisma.mrp_bom_lineGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Mrp_bom_lineGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.mrp_bom_lineCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Mrp_bom_lineCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -795,6 +945,28 @@ export const Ir_attachmentScalarFieldEnum = {
 } as const
 
 export type Ir_attachmentScalarFieldEnum = (typeof Ir_attachmentScalarFieldEnum)[keyof typeof Ir_attachmentScalarFieldEnum]
+
+
+export const Mrp_bomScalarFieldEnum = {
+  id: 'id',
+  product_tmpl_id: 'product_tmpl_id',
+  product_id: 'product_id',
+  product_qty: 'product_qty',
+  type: 'type',
+  active: 'active'
+} as const
+
+export type Mrp_bomScalarFieldEnum = (typeof Mrp_bomScalarFieldEnum)[keyof typeof Mrp_bomScalarFieldEnum]
+
+
+export const Mrp_bom_lineScalarFieldEnum = {
+  id: 'id',
+  bom_id: 'bom_id',
+  product_id: 'product_id',
+  product_qty: 'product_qty'
+} as const
+
+export type Mrp_bom_lineScalarFieldEnum = (typeof Mrp_bom_lineScalarFieldEnum)[keyof typeof Mrp_bom_lineScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1040,6 +1212,8 @@ export type GlobalOmitConfig = {
   product_template?: Prisma.product_templateOmit
   product_product?: Prisma.product_productOmit
   ir_attachment?: Prisma.ir_attachmentOmit
+  mrp_bom?: Prisma.mrp_bomOmit
+  mrp_bom_line?: Prisma.mrp_bom_lineOmit
 }
 
 /* Types for Logging */

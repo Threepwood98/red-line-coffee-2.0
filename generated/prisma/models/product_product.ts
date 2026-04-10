@@ -221,6 +221,7 @@ export type product_productWhereInput = {
   barcode?: Prisma.StringNullableFilter<"product_product"> | string | null
   active?: Prisma.BoolNullableFilter<"product_product"> | boolean | null
   product_template?: Prisma.XOR<Prisma.Product_templateScalarRelationFilter, Prisma.product_templateWhereInput>
+  mrpBomLines?: Prisma.Mrp_bom_lineListRelationFilter
 }
 
 export type product_productOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type product_productOrderByWithRelationInput = {
   barcode?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrderInput | Prisma.SortOrder
   product_template?: Prisma.product_templateOrderByWithRelationInput
+  mrpBomLines?: Prisma.mrp_bom_lineOrderByRelationAggregateInput
 }
 
 export type product_productWhereUniqueInput = Prisma.AtLeast<{
@@ -242,6 +244,7 @@ export type product_productWhereUniqueInput = Prisma.AtLeast<{
   barcode?: Prisma.StringNullableFilter<"product_product"> | string | null
   active?: Prisma.BoolNullableFilter<"product_product"> | boolean | null
   product_template?: Prisma.XOR<Prisma.Product_templateScalarRelationFilter, Prisma.product_templateWhereInput>
+  mrpBomLines?: Prisma.Mrp_bom_lineListRelationFilter
 }, "id">
 
 export type product_productOrderByWithAggregationInput = {
@@ -273,6 +276,7 @@ export type product_productCreateInput = {
   barcode?: string | null
   active?: boolean | null
   product_template: Prisma.product_templateCreateNestedOneWithoutProductProductsInput
+  mrpBomLines?: Prisma.mrp_bom_lineCreateNestedManyWithoutProduct_productInput
 }
 
 export type product_productUncheckedCreateInput = {
@@ -281,6 +285,7 @@ export type product_productUncheckedCreateInput = {
   default_code?: string | null
   barcode?: string | null
   active?: boolean | null
+  mrpBomLines?: Prisma.mrp_bom_lineUncheckedCreateNestedManyWithoutProduct_productInput
 }
 
 export type product_productUpdateInput = {
@@ -288,6 +293,7 @@ export type product_productUpdateInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   product_template?: Prisma.product_templateUpdateOneRequiredWithoutProductProductsNestedInput
+  mrpBomLines?: Prisma.mrp_bom_lineUpdateManyWithoutProduct_productNestedInput
 }
 
 export type product_productUncheckedUpdateInput = {
@@ -296,6 +302,7 @@ export type product_productUncheckedUpdateInput = {
   default_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  mrpBomLines?: Prisma.mrp_bom_lineUncheckedUpdateManyWithoutProduct_productNestedInput
 }
 
 export type product_productCreateManyInput = {
@@ -364,6 +371,11 @@ export type product_productSumOrderByAggregateInput = {
   product_tmpl_id?: Prisma.SortOrder
 }
 
+export type Product_productNullableScalarRelationFilter = {
+  is?: Prisma.product_productWhereInput | null
+  isNot?: Prisma.product_productWhereInput | null
+}
+
 export type product_productCreateNestedManyWithoutProduct_templateInput = {
   create?: Prisma.XOR<Prisma.product_productCreateWithoutProduct_templateInput, Prisma.product_productUncheckedCreateWithoutProduct_templateInput> | Prisma.product_productCreateWithoutProduct_templateInput[] | Prisma.product_productUncheckedCreateWithoutProduct_templateInput[]
   connectOrCreate?: Prisma.product_productCreateOrConnectWithoutProduct_templateInput | Prisma.product_productCreateOrConnectWithoutProduct_templateInput[]
@@ -406,10 +418,27 @@ export type product_productUncheckedUpdateManyWithoutProduct_templateNestedInput
   deleteMany?: Prisma.product_productScalarWhereInput | Prisma.product_productScalarWhereInput[]
 }
 
+export type product_productCreateNestedOneWithoutMrpBomLinesInput = {
+  create?: Prisma.XOR<Prisma.product_productCreateWithoutMrpBomLinesInput, Prisma.product_productUncheckedCreateWithoutMrpBomLinesInput>
+  connectOrCreate?: Prisma.product_productCreateOrConnectWithoutMrpBomLinesInput
+  connect?: Prisma.product_productWhereUniqueInput
+}
+
+export type product_productUpdateOneWithoutMrpBomLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.product_productCreateWithoutMrpBomLinesInput, Prisma.product_productUncheckedCreateWithoutMrpBomLinesInput>
+  connectOrCreate?: Prisma.product_productCreateOrConnectWithoutMrpBomLinesInput
+  upsert?: Prisma.product_productUpsertWithoutMrpBomLinesInput
+  disconnect?: Prisma.product_productWhereInput | boolean
+  delete?: Prisma.product_productWhereInput | boolean
+  connect?: Prisma.product_productWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.product_productUpdateToOneWithWhereWithoutMrpBomLinesInput, Prisma.product_productUpdateWithoutMrpBomLinesInput>, Prisma.product_productUncheckedUpdateWithoutMrpBomLinesInput>
+}
+
 export type product_productCreateWithoutProduct_templateInput = {
   default_code?: string | null
   barcode?: string | null
   active?: boolean | null
+  mrpBomLines?: Prisma.mrp_bom_lineCreateNestedManyWithoutProduct_productInput
 }
 
 export type product_productUncheckedCreateWithoutProduct_templateInput = {
@@ -417,6 +446,7 @@ export type product_productUncheckedCreateWithoutProduct_templateInput = {
   default_code?: string | null
   barcode?: string | null
   active?: boolean | null
+  mrpBomLines?: Prisma.mrp_bom_lineUncheckedCreateNestedManyWithoutProduct_productInput
 }
 
 export type product_productCreateOrConnectWithoutProduct_templateInput = {
@@ -456,6 +486,52 @@ export type product_productScalarWhereInput = {
   active?: Prisma.BoolNullableFilter<"product_product"> | boolean | null
 }
 
+export type product_productCreateWithoutMrpBomLinesInput = {
+  default_code?: string | null
+  barcode?: string | null
+  active?: boolean | null
+  product_template: Prisma.product_templateCreateNestedOneWithoutProductProductsInput
+}
+
+export type product_productUncheckedCreateWithoutMrpBomLinesInput = {
+  id?: number
+  product_tmpl_id: number
+  default_code?: string | null
+  barcode?: string | null
+  active?: boolean | null
+}
+
+export type product_productCreateOrConnectWithoutMrpBomLinesInput = {
+  where: Prisma.product_productWhereUniqueInput
+  create: Prisma.XOR<Prisma.product_productCreateWithoutMrpBomLinesInput, Prisma.product_productUncheckedCreateWithoutMrpBomLinesInput>
+}
+
+export type product_productUpsertWithoutMrpBomLinesInput = {
+  update: Prisma.XOR<Prisma.product_productUpdateWithoutMrpBomLinesInput, Prisma.product_productUncheckedUpdateWithoutMrpBomLinesInput>
+  create: Prisma.XOR<Prisma.product_productCreateWithoutMrpBomLinesInput, Prisma.product_productUncheckedCreateWithoutMrpBomLinesInput>
+  where?: Prisma.product_productWhereInput
+}
+
+export type product_productUpdateToOneWithWhereWithoutMrpBomLinesInput = {
+  where?: Prisma.product_productWhereInput
+  data: Prisma.XOR<Prisma.product_productUpdateWithoutMrpBomLinesInput, Prisma.product_productUncheckedUpdateWithoutMrpBomLinesInput>
+}
+
+export type product_productUpdateWithoutMrpBomLinesInput = {
+  default_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  product_template?: Prisma.product_templateUpdateOneRequiredWithoutProductProductsNestedInput
+}
+
+export type product_productUncheckedUpdateWithoutMrpBomLinesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_tmpl_id?: Prisma.IntFieldUpdateOperationsInput | number
+  default_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+}
+
 export type product_productCreateManyProduct_templateInput = {
   id?: number
   default_code?: string | null
@@ -467,6 +543,7 @@ export type product_productUpdateWithoutProduct_templateInput = {
   default_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  mrpBomLines?: Prisma.mrp_bom_lineUpdateManyWithoutProduct_productNestedInput
 }
 
 export type product_productUncheckedUpdateWithoutProduct_templateInput = {
@@ -474,6 +551,7 @@ export type product_productUncheckedUpdateWithoutProduct_templateInput = {
   default_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  mrpBomLines?: Prisma.mrp_bom_lineUncheckedUpdateManyWithoutProduct_productNestedInput
 }
 
 export type product_productUncheckedUpdateManyWithoutProduct_templateInput = {
@@ -484,6 +562,35 @@ export type product_productUncheckedUpdateManyWithoutProduct_templateInput = {
 }
 
 
+/**
+ * Count Type Product_productCountOutputType
+ */
+
+export type Product_productCountOutputType = {
+  mrpBomLines: number
+}
+
+export type Product_productCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  mrpBomLines?: boolean | Product_productCountOutputTypeCountMrpBomLinesArgs
+}
+
+/**
+ * Product_productCountOutputType without action
+ */
+export type Product_productCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Product_productCountOutputType
+   */
+  select?: Prisma.Product_productCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Product_productCountOutputType without action
+ */
+export type Product_productCountOutputTypeCountMrpBomLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.mrp_bom_lineWhereInput
+}
+
 
 export type product_productSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -492,6 +599,8 @@ export type product_productSelect<ExtArgs extends runtime.Types.Extensions.Inter
   barcode?: boolean
   active?: boolean
   product_template?: boolean | Prisma.product_templateDefaultArgs<ExtArgs>
+  mrpBomLines?: boolean | Prisma.product_product$mrpBomLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.Product_productCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["product_product"]>
 
 export type product_productSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -523,6 +632,8 @@ export type product_productSelectScalar = {
 export type product_productOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "product_tmpl_id" | "default_code" | "barcode" | "active", ExtArgs["result"]["product_product"]>
 export type product_productInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product_template?: boolean | Prisma.product_templateDefaultArgs<ExtArgs>
+  mrpBomLines?: boolean | Prisma.product_product$mrpBomLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.Product_productCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type product_productIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product_template?: boolean | Prisma.product_templateDefaultArgs<ExtArgs>
@@ -535,6 +646,7 @@ export type $product_productPayload<ExtArgs extends runtime.Types.Extensions.Int
   name: "product_product"
   objects: {
     product_template: Prisma.$product_templatePayload<ExtArgs>
+    mrpBomLines: Prisma.$mrp_bom_linePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -937,6 +1049,7 @@ readonly fields: product_productFieldRefs;
 export interface Prisma__product_productClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   product_template<T extends Prisma.product_templateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.product_templateDefaultArgs<ExtArgs>>): Prisma.Prisma__product_templateClient<runtime.Types.Result.GetResult<Prisma.$product_templatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  mrpBomLines<T extends Prisma.product_product$mrpBomLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.product_product$mrpBomLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$mrp_bom_linePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1364,6 +1477,30 @@ export type product_productDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many product_products to delete.
    */
   limit?: number
+}
+
+/**
+ * product_product.mrpBomLines
+ */
+export type product_product$mrpBomLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the mrp_bom_line
+   */
+  select?: Prisma.mrp_bom_lineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the mrp_bom_line
+   */
+  omit?: Prisma.mrp_bom_lineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.mrp_bom_lineInclude<ExtArgs> | null
+  where?: Prisma.mrp_bom_lineWhereInput
+  orderBy?: Prisma.mrp_bom_lineOrderByWithRelationInput | Prisma.mrp_bom_lineOrderByWithRelationInput[]
+  cursor?: Prisma.mrp_bom_lineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Mrp_bom_lineScalarFieldEnum | Prisma.Mrp_bom_lineScalarFieldEnum[]
 }
 
 /**

@@ -37,3 +37,13 @@ export type product_product = Prisma.product_productModel
  * 
  */
 export type ir_attachment = Prisma.ir_attachmentModel
+/**
+ * Model mrp_bom
+ * 
+ */
+export type mrp_bom = Prisma.mrp_bomModel
+/**
+ * Model mrp_bom_line
+ * 
+ */
+export type mrp_bom_line = Prisma.mrp_bom_lineModel
