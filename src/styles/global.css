@@ -53,11 +53,21 @@
   --font-rajdhani-700: "Rajdhani", sans-serif;
 }
 
-.font-rajdhani-300 { font-weight: 300; }
-.font-rajdhani-400 { font-weight: 400; }
-.font-rajdhani-500 { font-weight: 500; }
-.font-rajdhani-600 { font-weight: 600; }
-.font-rajdhani-700 { font-weight: 700; }
+.font-rajdhani-300 {
+  font-weight: 300;
+}
+.font-rajdhani-400 {
+  font-weight: 400;
+}
+.font-rajdhani-500 {
+  font-weight: 500;
+}
+.font-rajdhani-600 {
+  font-weight: 600;
+}
+.font-rajdhani-700 {
+  font-weight: 700;
+}
 
 :root {
   --radius: 0.625rem;
