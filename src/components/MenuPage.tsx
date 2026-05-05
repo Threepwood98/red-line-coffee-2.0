@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { categories, type Category, type Product } from "@/types";
 import { useElementRefs } from "@/hooks/useElementRefs";
 import ModalFlip from "./ModalFlip";
+import ProductCardB from "./ProductCardB";
 
 const allCategories = [
   { id: "0", name: "Todo", value: "all" as Category | "all" },
@@ -195,7 +196,7 @@ export default function MenuPage() {
         <ModalFlip
           productId={selectedProduct.id}
           faceA={<ProductTCG product={selectedProduct} />}
-          faceB={<ProductTCG product={selectedProduct} />}
+          faceB={<ProductCardB product={selectedProduct} />}
           originRect={originRect}
           animate={animate}
           setAnimate={setAnimate}

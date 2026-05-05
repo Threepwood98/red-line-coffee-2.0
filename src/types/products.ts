@@ -1,5 +1,12 @@
 export type Category = "coffee" | "drink" | "food" | "sweet";
 
+export interface Material {
+  productId?: string;
+  nameES: string;
+  nameJP: string;
+  quantity: number;
+}
+
 export interface Product {
   id: string;
   nameES: string;
@@ -9,6 +16,7 @@ export interface Product {
   category: Category;
   image: string;
   description: string;
+  materials: Material[];
 }
 
 export interface Merch {
