@@ -157,11 +157,26 @@ export default function ProductCardB({
           </span>
           <div
             className={cn(
-              "border-2 rounded-xl w-full p-2 font-bebas-neue text-xl sm:text-xl transition-all duration-300",
+              "border-2 rounded-xl w-full font-bebas-neue text-xl sm:text-xl transition-all duration-300",
               !isNR && rarityStyles[rarity].gradient,
             )}
           >
-            <div className="flex w-full justify-between items-center">
+            <div className="p-2">
+              <span>Ingredientes:</span>
+              <p className="font-rajdhani text-sm sm:text-lg">
+                {product.materials.length > 0 ? (
+                  product.materials
+                    .map((material) => `${material.nameES}`)
+                    .join(", ")
+                ) : (
+                  <span className="italic text-muted-foreground">
+                    No ingredients listed
+                  </span>
+                )}
+              </p>
+            </div>
+
+            <div className="flex w-full justify-between items-center px-2">
               <CategoryIcon category={product.category} />
               <span>$ {product.price}</span>
               <span>+ {(product.price * 0.1).toFixed(2)}</span>
@@ -170,18 +185,6 @@ export default function ProductCardB({
                 {!isNR && product.rating.toFixed(1)}
               </span>
             </div>
-            <span>Ingredientes:</span>
-            <p className="font-rajdhani text-lg sm:text-xl">
-              {product.materials.length > 0 ? (
-                product.materials
-                  .map((material) => `${material.nameES}`)
-                  .join(", ")
-              ) : (
-                <span className="italic text-muted-foreground">
-                  No ingredients listed
-                </span>
-              )}
-            </p>
           </div>
         </div>
       </div>

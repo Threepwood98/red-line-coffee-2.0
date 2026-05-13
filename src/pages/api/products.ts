@@ -50,6 +50,9 @@ export const GET: APIRoute = async () => {
           nameJP: compName?.ja_JP || Object.values(compName || {})[0] || "",
           quantity: Number(line.product_qty || 1),
         };
+      })?.filter((m) => {
+        const n = m.nameES.toLowerCase();
+        return n !== "aceite" && n !== "azúcar";
       }) ?? [];
 
     return {

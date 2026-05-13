@@ -158,7 +158,7 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
             />
           </div>
           <div className="text-center uppercase">
-            <span className="block font-bebas-neue text-lg sm:text-xl text-accent-foreground">
+            <span className="block font-bebas-neue sm:text-lg text-accent-foreground">
               {product.nameJP}
             </span>
             <span className="block font-rajdhani text-xs sm:text-sm text-accent-foreground italic">
