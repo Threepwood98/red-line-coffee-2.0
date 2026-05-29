@@ -91,7 +91,7 @@ export default function MerchCard({ merch, className }: MerchCardProps) {
               src={
                 imageError
                   ? "/No_Image_Available.webp"
-                  : `/api/products/${merch.id}/image`
+                  : merch.image
               }
               alt={merch.nameES}
               className="object-cover w-full h-full"

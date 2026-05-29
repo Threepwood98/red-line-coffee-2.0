@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# synced data (generated at build / runtime)
+/data/
+
 # generated types
 .astro/
 

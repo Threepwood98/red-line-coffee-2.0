@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { Route, Router, Switch } from "wouter";
 import { ThemeSwitch } from "./components/ThemeSwitch";
 import BottomNav from "./components/BottomNav";
+import { RefreshButton } from "./components/RefreshButton";
 
 const MenuPage = lazy(() => import("@/components/MenuPage"));
 const CatalogPage = lazy(() => import("@/components/CatalogPage"));
@@ -38,7 +39,10 @@ export default function App() {
             className="w-full h-full object-cover"
           />
         </div>
-        <ThemeSwitch />
+        <div className="flex gap-4">
+          <ThemeSwitch />
+          <RefreshButton />
+        </div>
       </header>
 
       <main>

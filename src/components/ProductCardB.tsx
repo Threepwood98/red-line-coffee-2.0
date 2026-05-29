@@ -145,7 +145,7 @@ export default function ProductCardB({
               src={
                 imageError
                   ? "/No_Image_Available.webp"
-                  : `/api/products/${product.id}/image`
+                  : product.image
               }
               alt={product.nameES}
               className="object-cover w-full h-full"
