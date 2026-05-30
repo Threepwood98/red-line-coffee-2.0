@@ -57,7 +57,7 @@ async function refreshProducts() {
       price: Number(product.list_price) || 0,
       rating: 0,
       category,
-      image: `/images/products/${product.id}.webp`,
+      image: `/images/products/${product.nameJP.toLowerCase().replace(/\s+/g, '_')}.png`,
       description: description?.es_ES ?? "",
       materials,
     };

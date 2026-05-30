@@ -22,9 +22,9 @@ export default function BottomNav() {
   );
 
   return (
-    <div className="fixed w-full h-18 px-6 bottom-0 z-10 bg-linear-to-t from-black/75 to-transparent">
+    <div className="fixed w-full h-18 md:h-24 px-6 bottom-0 z-10 bg-linear-to-t from-black/75 to-transparent">
       <nav
-        className="flex w-full h-14 p-1 items-center justify-around rounded-full bg-primary-foreground"
+        className="flex w-full p-1 md:p-1.5 items-center justify-around rounded-full bg-primary-foreground"
         role="navigation"
       >
         {NAV_ITEMS.map((item, i) => {
@@ -40,9 +40,9 @@ export default function BottomNav() {
               )}
               onClick={() => navigate(item.path)}
             >
-              <item.Icon />
+              <item.Icon className="md:size-8" />
               <span
-                className={`text-sm ${isActive ? "font-bold" : "font-medium"}`}
+                className={`text-sm md:text-lg ${isActive ? "font-bold" : "font-medium"}`}
               >
                 {item.label}
               </span>

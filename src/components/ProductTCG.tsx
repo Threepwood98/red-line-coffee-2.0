@@ -135,13 +135,15 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
     >
       <div
         className={cn(
-          "border-b-2 flex justify-between rounded-t-xl px-3 sm:px-6 pt-2 sm:pt-4 transition-all duration-300",
+          "border-b-2 flex justify-between rounded-t-xl px-3 md:px-6 pt-2 transition-all duration-300",
           !isNR ? rarityStyles[rarity].gradient : "py-1.5 sm:py-2.5",
         )}
       >
-        <CategoryIcon category={product.category} />
+        <CategoryIcon category={product.category} className="md:size-8" />
         <span className="flex gap-0.5 font-bebas-neue text-xl sm:text-xl">
-          <StarIcon className={cn(!isNR && rarityStyles[rarity].star)} />
+          <StarIcon
+            className={cn(!isNR && rarityStyles[rarity].star, "md:size-8")}
+          />
           {!isNR && product.rating.toFixed(1)}
         </span>
       </div>
@@ -158,16 +160,16 @@ export default function ProductTCG({ product, className }: ProductTCGProps) {
             />
           </div>
           <div className="text-center uppercase">
-            <span className="block font-bebas-neue sm:text-lg text-accent-foreground">
+            <span className="block font-bebas-neue md:text-3xl text-accent-foreground">
               {product.nameJP}
             </span>
-            <span className="block font-rajdhani text-xs sm:text-sm text-accent-foreground italic">
+            <span className="block font-rajdhani text-xs md:text-xl text-accent-foreground italic">
               {product.nameES}
             </span>
           </div>
         </div>
       </div>
-      <div className="border-t-2 flex justify-between rounded-b-xl font-bebas-neue text-xl sm:text-xl px-3 sm:px-6 pt-1 sm:pt-2">
+      <div className="border-t-2 flex justify-between rounded-b-xl font-bebas-neue text-lg md:text-3xl px-3 md:px-6 pt-1 md:pt-2">
         <span>$ {product.price}</span>
         <span>+ {(product.price * 0.1).toFixed(2)}</span>
       </div>

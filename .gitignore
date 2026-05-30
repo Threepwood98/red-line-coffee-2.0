@@ -2,7 +2,8 @@
 dist/
 
 # synced data (generated at build / runtime)
-/data/
+/public/data/
+/public/images/
 
 # generated types
 .astro/

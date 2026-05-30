@@ -2,7 +2,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 
 export function getDataDir(): string {
-  return process.env.DATA_DIR ?? path.join(process.cwd(), "data");
+  return process.env.DATA_DIR ?? path.join(process.cwd(), "public", "data");
 }
 
 export async function readJSON<T>(filename: string): Promise<T[]> {

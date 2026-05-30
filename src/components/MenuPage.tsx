@@ -14,19 +14,10 @@ const allCategories = [
 
 type ActiveCategory = Category | "all";
 
-/**
- * Estructura que guardamos en modalStateRef para poder restaurar el estado del
- * modal (posición de origen de la carta) si los productos se recargan mientras
- * el modal estaba abierto.
- *
- * IMPORTANTE: guardamos `scrollY` en el momento de apertura porque DOMRect.y
- * es relativo al viewport, no al documento. Para restaurar la posición correcta
- * de la carta necesitamos: rect.top + scrollY al momento de abrir.
- */
 interface ModalState {
   productId: string;
   originRect: DOMRectInit;
-  scrollYAtOpen: number; // FIX #7: guardamos el scrollY real al momento de abrir
+  scrollYAtOpen: number;
 }
 
 export default function MenuPage() {
@@ -37,8 +28,6 @@ export default function MenuPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // FIX #6: modalStateRef se popula al abrir el modal y se limpia al cerrarlo.
-  // Permite que useLayoutEffect restaure el modal si los productos se recargan.
   const modalStateRef = useRef<ModalState | null>(null);
 
   const { setRef, getRect } = useElementRefs<Product>();
@@ -71,13 +60,10 @@ export default function MenuPage() {
     fetchProducts();
   }, []);
 
-  // ─── Restauración del modal al recargar productos ──────────────────────────
   useLayoutEffect(() => {
     const modalState = modalStateRef.current;
     if (!modalState?.productId || !modalState.originRect) return;
 
-    // FIX #7: Restauramos al scrollY exacto en que estaba el usuario cuando
-    // abrió el modal, no al `y` del rect que es relativo al viewport.
     window.scrollTo(0, modalState.scrollYAtOpen);
 
     requestAnimationFrame(() => {
@@ -122,7 +108,7 @@ export default function MenuPage() {
       {/* Barra de categorías fija en la parte superior */}
       <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-xs shadow-sm">
         <div className="flex flex-col">
-          <h1 className="font-bebas-neue text-4xl">Menú</h1>
+          <h1 className="font-bebas-neue text-4xl px-6">Menú</h1>
           <div className="flex">
             {allCategories.map((ctg) => (
               <button
@@ -133,13 +119,14 @@ export default function MenuPage() {
                   )
                 }
                 className={cn(
-                  "flex flex-col w-full items-center justify-center text-sm font-medium py-2 sm:py-2 border-b-2 border-transparent cursor-pointer transition-colors",
+                  "flex flex-col w-full items-center justify-center font-medium py-2 border-b-2 border-transparent cursor-pointer transition-colors",
                   activeCategory === ctg.value
                     ? "text-primary border-b-2 border-primary"
                     : "hover:border-primary dark:hover:border-primary text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-primary",
                 )}
               >
-                <CategoryIcon category={ctg.value} /> {ctg.name}
+                <CategoryIcon category={ctg.value} className="md:size-8" />{" "}
+                {ctg.name}
               </button>
             ))}
           </div>
@@ -166,8 +153,6 @@ export default function MenuPage() {
                   onClick={() => {
                     const rect = getRect(product.id);
                     if (rect) {
-                      // FIX #6 + #7: Populamos modalStateRef con el estado
-                      // completo incluyendo scrollY al momento exacto de apertura.
                       modalStateRef.current = {
                         productId: product.id,
                         originRect: {
@@ -201,8 +186,6 @@ export default function MenuPage() {
           animate={animate}
           setAnimate={setAnimate}
           onClose={() => {
-            // FIX #6: Limpiamos la referencia al cerrar para que el
-            // useLayoutEffect no intente restaurar un modal ya cerrado.
             modalStateRef.current = null;
             setSelectedProduct(null);
             setOriginRect(null);
