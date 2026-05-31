@@ -8,9 +8,6 @@ const MenuPage = lazy(() => import("@/components/MenuPage"));
 const CatalogPage = lazy(() => import("@/components/CatalogPage"));
 const StorePage = lazy(() => import("@/components/StorePage"));
 
-// const Pokedex = lazy(() => import("@/components/Pokedex"));
-// const MorePage = lazy(() => import("@/components/MorePage"));
-
 function PlaceholderPage({ title }: { title: string }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
@@ -21,12 +18,6 @@ function PlaceholderPage({ title }: { title: string }) {
 }
 
 export default function App() {
-  // const [pokemonList, setPokemonList] = useState<FullPokemon[]>([]);
-
-  // useEffect(() => {
-  //   fetchPokemonList(151).then(setPokemonList);
-  // }, []);
-
   return (
     <Router>
       <header className="flex w-full h-16 px-4 sm:px-8 rounded-b-2xl items-center justify-between bg-primary-foreground">
