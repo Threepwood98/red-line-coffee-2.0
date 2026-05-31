@@ -34,7 +34,7 @@ async function refreshProducts() {
   const formattedProducts = products.map((product) => {
     const name = (product.name || {}) as Record<Language, string>;
     const description = product.description_sale as Record<Language, string> | null;
-    const category = product.product_category?.name.toLowerCase() || "all";
+    const category = product.product_category?.name?.toLowerCase() || "all";
     const bom = product.mrpBoms?.[0];
     const materials =
       bom?.bom_lines?.map((line) => {
@@ -57,7 +57,7 @@ async function refreshProducts() {
       price: Number(product.list_price) || 0,
       rating: 0,
       category,
-      image: `/images/products/${product.nameJP.toLowerCase().replace(/\s+/g, '_')}.png`,
+      image: `/images/products/${(name.ja_JP || Object.values(name)[0] || "商品").toLowerCase().replace(/\s+/g, '_')}.png`,
       description: description?.es_ES ?? "",
       materials,
     };
